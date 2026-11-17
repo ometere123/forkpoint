@@ -129,6 +129,8 @@ test('wallet gating, payable submission, refresh recovery, execution success and
   await hydrated(page);
   await expect(page.getByRole('heading', { name: market.feature })).toBeVisible();
   await page.getByRole('button', { name: 'Connect wallet' }).first().click();
+  await expect.poll(() => fixture.reads.filter(read => read === 'get_position').length).toBeGreaterThan(0);
+  await expect(page.getByText('Loading your position…', { exact: true })).toHaveCount(0);
   await expect(page.getByText('Wrong network.', { exact: false })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Predict YES' })).toBeDisabled();
   expect(fixture.sends).toHaveLength(0);
