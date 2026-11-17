@@ -52,6 +52,10 @@ node scripts/verify-studionet.mjs CONTRACT_ADDRESS
 
 For GenVM lint, set `GENVM_VERSION=v0.2.16` and `PYTHONUTF8=1` in your shell, then run `uv run genvm-lint check build/forkpoint.py`. The assembler emits UTF-8 with LF line endings so the exact deployed bytes can be reproduced on either OS. The Studionet verifier compares those bytes and the live schema with the local build.
 
+## Studionet candidate deployment
+
+The validated candidate is deployed at [`0x99F02B4f47C03aDDFaaC3a14925B5137d08926a3`](https://explorer-studio.genlayer.com/address/0x99F02B4f47C03aDDFaaC3a14925B5137d08926a3) on chain 61999. Its finalized deployment transaction is [`0x72b9e1ab9ae4a38fe0dea14913e61ca62def8b793438072a1b72d7ccb769b080`](https://explorer-studio.genlayer.com/tx/0x72b9e1ab9ae4a38fe0dea14913e61ca62def8b793438072a1b72d7ccb769b080). The exact source SHA-256 is `2d67bc6b5e69a96f956d18ac6ff02570b6e529ed01cd85ab4d7664927e028051`; see `deployments/studionet-candidate.json`. This is a candidate deployment, not a funded production release: no live market stake, payout or recipient-credit evidence is claimed.
+
 For a funded acceptance run, start with a controlled public trigger PR and unpublished target tag on an immutable-release-enabled repository. Create and fund the market from distinct test wallets before the cutoff, then merge the trigger in its eligible interval. Publish the immutable target release after the merge. Verify finalized successful settlement and claim transactions, market and treasury readbacks, and native recipient-credit evidence. Use a separate unmerged PR through the deadline to verify the refund path.
 
 

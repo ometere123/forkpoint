@@ -1,0 +1,17 @@
+{
+  "network": "studionet",
+  "chainId": 61999,
+  "rpc": "https://studio.genlayer.com/api",
+  "contractAddress": "0x99F02B4f47C03aDDFaaC3a14925B5137d08926a3",
+  "contractExplorer": "https://explorer-studio.genlayer.com/address/0x99F02B4f47C03aDDFaaC3a14925B5137d08926a3",
+  "deploymentTransaction": "0x72b9e1ab9ae4a38fe0dea14913e61ca62def8b793438072a1b72d7ccb769b080",
+  "deploymentExplorer": "https://explorer-studio.genlayer.com/tx/0x72b9e1ab9ae4a38fe0dea14913e61ca62def8b793438072a1b72d7ccb769b080",
+  "deploymentStatus": "FINALIZED",
+  "executionResult": "SUCCESS",
+  "consensusResult": "MAJORITY_AGREE",
+  "sourceSha256": "2d67bc6b5e69a96f956d18ac6ff02570b6e529ed01cd85ab4d7664927e028051",
+  "sourceParity": "exact-bytes",
+  "validatedArtifact": "build/forkpoint.py",
+  "fundedRelease": false,
+  "releaseNote": "Candidate deployment only. No funded market lifecycle or recipient-credit proof is claimed; see README funded-release gate."
+}
