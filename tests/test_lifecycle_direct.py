@@ -103,25 +103,41 @@ def test_spec_rejection(market, direct_vm, change, error):
 
 def test_replay_and_boundary(market, direct_vm, direct_alice, direct_bob):
     sender(direct_vm, direct_alice, STAKE - 1)
-    with direct_vm.expect_revert("INCORRECT_STAKE"):
-        market.predict(0, True)
+    assert market.predict(0, True) == "REJECTED_INCORRECT_STAKE_REFUND_EMITTED_UNCONFIRMED"
     sender(direct_vm, direct_alice, STAKE + 1)
-    with direct_vm.expect_revert("INCORRECT_STAKE"):
-        market.predict(0, True)
+    assert market.predict(0, True) == "REJECTED_INCORRECT_STAKE_REFUND_EMITTED_UNCONFIRMED"
+    sender(direct_vm, direct_alice, 0)
+    assert market.predict(0, True) == "REJECTED_INCORRECT_STAKE_NO_VALUE"
     at(direct_vm, 9)
     sender(direct_vm, direct_alice, STAKE)
-    market.predict(0, True)
-    with direct_vm.expect_revert("POSITION_EXISTS"):
-        market.predict(0, False)
-    with direct_vm.expect_revert("MARKET_NOT_FOUND"):
-        market.predict(1, True)
+    assert market.predict(0, True) == "ACCEPTED"
+    assert market.predict(0, False) == "REJECTED_POSITION_EXISTS_REFUND_EMITTED_UNCONFIRMED"
+    assert market.predict(1, True) == "REJECTED_MARKET_NOT_FOUND_REFUND_EMITTED_UNCONFIRMED"
     sender(direct_vm, direct_bob, STAKE)
     at(direct_vm, 10)
-    with direct_vm.expect_revert("PREDICTIONS_CLOSED"):
-        market.predict(0, False)
+    assert market.predict(0, False) == "REJECTED_PREDICTIONS_CLOSED_REFUND_EMITTED_UNCONFIRMED"
     assert position(market, direct_bob) is None
     assert details(market)["state"] == "PREDICTIONS_CLOSED"
     assert details(market)["pool_wei"] == str(STAKE)
+
+
+def test_rejected_prediction_emits_exact_refund_message(market, direct_vm, direct_alice):
+    events = []
+
+    def capture(vm, request):
+        events.append(request)
+        return {"ok": None}
+
+    direct_vm._gl_call_hook = capture
+    sender(direct_vm, direct_alice, STAKE + 1)
+    assert market.predict(0, True) == "REJECTED_INCORRECT_STAKE_REFUND_EMITTED_UNCONFIRMED"
+    direct_vm._gl_call_hook = None
+
+    assert len(events) == 1
+    transfer = events[0]["EthSend"]
+    assert transfer["address"].as_bytes == direct_alice
+    assert int(transfer["value"]) == STAKE + 1
+    assert details(market)["pool_wei"] == "0"
 
 
 @pytest.mark.parametrize(("merged_at", "expected"), [
@@ -185,12 +201,10 @@ def test_expire_and_native_dispatch(market, direct_vm, direct_alice, direct_bob)
 def test_wrong_network_and_indirect_prediction(market, direct_vm, direct_alice, direct_bob):
     direct_vm._chain_id = 1
     sender(direct_vm, direct_alice, STAKE)
-    with direct_vm.expect_revert("WRONG_NETWORK"):
-        market.predict(0, True)
+    assert market.predict(0, True) == "REJECTED_WRONG_NETWORK_REFUND_EMITTED_UNCONFIRMED"
     direct_vm._chain_id = 61999
     direct_vm.origin = direct_bob
-    with direct_vm.expect_revert("DIRECT_WALLET_REQUIRED"):
-        market.predict(0, True)
+    assert market.predict(0, True) == "REJECTED_DIRECT_WALLET_REQUIRED_REFUND_EMITTED_UNCONFIRMED"
 
 def test_wrong_repository_never_activates_market(market, direct_vm):
     mock_pr(direct_vm, 12, repo_id=55)
@@ -204,10 +218,9 @@ def test_wallet_limit_and_void_pool_conservation(
 ):
     for wallet, yes in [(direct_alice, True), (direct_bob, False)]:
         sender(direct_vm, wallet, STAKE)
-        market.predict(0, yes)
+        assert market.predict(0, yes) == "ACCEPTED"
     sender(direct_vm, direct_charlie, STAKE)
-    with direct_vm.expect_revert("MARKET_FULL"):
-        market.predict(0, True)
+    assert market.predict(0, True) == "REJECTED_MARKET_FULL_REFUND_EMITTED_UNCONFIRMED"
     sender(direct_vm, direct_charlie)
     mock_pr(direct_vm)
     at(direct_vm, 21)
@@ -242,8 +255,7 @@ def test_malformed_specs_do_not_create_markets(market, direct_vm, raw, reason):
 def test_pinned_early_transaction_cannot_fund_newer_market(market, direct_vm, direct_alice):
     at(direct_vm, -1)
     sender(direct_vm, direct_alice, STAKE)
-    with direct_vm.expect_revert("PREDICTIONS_CLOSED"):
-        market.predict(0, True)
+    assert market.predict(0, True) == "REJECTED_PREDICTIONS_CLOSED_REFUND_EMITTED_UNCONFIRMED"
     assert details(market)["pool_wei"] == "0"
 
 

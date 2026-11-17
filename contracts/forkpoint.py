@@ -59,6 +59,22 @@ def _fail(reason: str) -> None:
     raise gl.vm.UserError(reason)
 
 
+def _refund_rejected(reason: str) -> str:
+    """Refund an application-level rejection after the payable value has arrived.
+
+    Studionet credits ``gl.message.value`` before GenVM execution and does not roll that
+    credit back when a contract raises ``gl.vm.UserError``. Payable validation therefore
+    returns a tagged refusal and emits the exact incoming value to the direct sender instead
+    of raising. The parent receipt only proves that the refund message was dispatched; the
+    child transfer and recipient credit still require independent readback.
+    """
+    amount = int(gl.message.value)
+    if amount > 0:
+        _PayoutRecipient(gl.message.sender_address).emit_transfer(value=u256(amount))
+        return "REJECTED_" + reason + "_REFUND_EMITTED_UNCONFIRMED"
+    return "REJECTED_" + reason + "_NO_VALUE"
+
+
 def _json(value) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
 
@@ -293,7 +309,14 @@ class Forkpoint(gl.Contract):
         return market_id
 
     @gl.public.write.payable
-    def predict(self, market_id: u64, yes: bool) -> None:
+    def predict(self, market_id: u64, yes: bool) -> str:
+        try:
+            self._predict(market_id, yes)
+            return "ACCEPTED"
+        except gl.vm.UserError as exc:
+            return _refund_rejected(str(exc.message))
+
+    def _predict(self, market_id: u64, yes: bool) -> None:
         sender = _wallet()
         if type(yes) is not bool:
             _fail("INVALID_POSITION_SIDE")

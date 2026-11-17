@@ -128,10 +128,9 @@ def test_real_storage_at_64_wallets(contract_source):
         assert market.create_market(json.dumps(spec)) == 0
         for account in range(1, 65):
             _set_sender(vm, Address(_wallet(account)), 17)
-            market.predict(0, account % 2 == 0)
+            assert market.predict(0, account % 2 == 0) == "ACCEPTED"
         _set_sender(vm, Address(_wallet(65)), 17)
-        with vm.expect_revert("MARKET_FULL"):
-            market.predict(0, True)
+        assert market.predict(0, True) == "REJECTED_MARKET_FULL_REFUND_EMITTED_UNCONFIRMED"
         _set_sender(vm, Address(_wallet(65)))
         assert json.loads(market.get_position(0, Address(_wallet(65)))) is None
         state = json.loads(market.get_market(0))
