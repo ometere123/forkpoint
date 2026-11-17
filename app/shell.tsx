@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
 import { GitFork, Wallet, ArrowUpRight } from 'lucide-react';
 import { CHAIN } from '../lib/chain';
 import { useWallet } from './wallet';
@@ -9,6 +10,10 @@ import { useWallet } from './wallet';
 export function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const { account, chain, walletError, connect, switchWallet, disconnect } = useWallet();
+  useEffect(() => {
+    document.documentElement.dataset.forkpointHydrated = 'true';
+    return () => { delete document.documentElement.dataset.forkpointHydrated; };
+  }, []);
   return <>
     <a className="skip" href="#main">Skip to content</a>
     <header className="site-head"><div className="wrap nav">

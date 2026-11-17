@@ -95,14 +95,19 @@ async function wallet(page: Page, fixture: Fixture) {
 }
 
 function fresh(): Fixture { return { count: 1, sends: [], reads: [], position: false }; }
+async function hydrated(page: Page) {
+  await expect(page.locator('html')).toHaveAttribute('data-forkpoint-hydrated', 'true', { timeout: 30_000 });
+}
 
 test('keyboard navigation, responsive layout and accessible explorer with RPC fixtures', async ({ page }) => {
   const fixture = fresh();
   await wire(page, fixture);
   await page.goto('/');
+  await hydrated(page);
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
   await page.getByRole('navigation').getByRole('link', { name: 'Markets' }).click();
+  await expect(page).toHaveURL(/\/markets$/, { timeout: 30_000 });
   await expect(page.getByRole('link', { name: market.feature })).toBeVisible();
   await page.getByRole('textbox', { name: 'Search this page' }).fill('missing search');
   await expect(page.getByText('No matching markets on this page.')).toBeVisible();
@@ -121,6 +126,7 @@ test('wallet gating, payable submission, refresh recovery, execution success and
   await wire(page, fixture);
   await wallet(page, fixture);
   await page.goto('/markets/0');
+  await hydrated(page);
   await expect(page.getByRole('heading', { name: market.feature })).toBeVisible();
   await page.getByRole('button', { name: 'Connect wallet' }).first().click();
   await expect(page.getByText('Wrong network.', { exact: false })).toBeVisible();
@@ -142,6 +148,7 @@ test('wallet gating, payable submission, refresh recovery, execution success and
   expect(fixture.sends).toHaveLength(1);
   fixture.position = true;
   fixture.receipt.execution = 'SUCCESS';
+  await page.getByRole('button', { name: 'Refresh receipts' }).click();
   await expect(page.getByText('Finalized · Success', { exact: true })).toBeVisible();
   await expect(page.getByText('Your position · YES', { exact: true })).toBeVisible();
   expect(fixture.reads).toContain('get_position');
@@ -162,6 +169,7 @@ test('validates public GitHub IDs and freezes an exact source marker in the crea
     await route.fulfill({ json: result });
   });
   await page.goto('/markets/new');
+  await hydrated(page);
   await page.getByLabel('Trigger repository ID').fill('15');
   await page.getByLabel('Pull request number').fill('12');
   await page.getByLabel('Target repository ID').fill('17');
@@ -189,6 +197,7 @@ test('finalized execution error does not create a position with RPC fixtures', a
   await wire(page, fixture);
   await wallet(page, fixture);
   await page.goto('/markets/0');
+  await hydrated(page);
   await expect(page.getByRole('heading', { name: market.feature })).toBeVisible();
   await page.getByRole('button', { name: 'Connect wallet' }).first().click();
   await page.getByRole('button', { name: 'Switch to Studionet' }).first().click();

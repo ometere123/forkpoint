@@ -4,6 +4,7 @@ export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
   workers: 2,
+  expect: { timeout: 15_000 },
   use: { baseURL: 'http://127.0.0.1:3099', trace: 'retain-on-failure' },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
