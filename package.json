@@ -1,0 +1,35 @@
+{
+  "name": "forkpoint",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint app lib",
+    "typecheck": "tsc --noEmit",
+    "genlayer": "node ./node_modules/genlayer/dist/index.js"
+  },
+  "dependencies": {
+    "genlayer-js": "1.1.8",
+    "next": "15.5.29",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "lucide-react": "^0.468.0"
+  },
+  "devDependencies": {
+    "genlayer": "0.39.1",
+    "typescript": "^5.9.3",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.29",
+    "@eslint/eslintrc": "^3",
+    "tailwindcss": "^3.4.19",
+    "postcss": "^8.5.6",
+    "autoprefixer": "^10",
+    "@playwright/test": "1.65.1",
+    "@axe-core/playwright": "4.14.0"
+  }
+}
