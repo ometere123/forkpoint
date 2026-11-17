@@ -14,13 +14,15 @@ const market = {
     { path: 'docs/events.md', needle: 'Events use structured data.\nPayload fields are validated.' },
   ],
   stake: '1000000000000000', limit: 16, created_at: 1_900_000_000,
-  yes_count: 0, no_count: 0, state: 'CREATED', merged_at: null,
+  yes_count: 0, no_count: 0, state: 'CREATED', stored_state: 'CREATED', merged_at: null as number | null,
+  policy: 'github-immutable-release-markers-v1', refund_all: false,
   trigger_window_start: 1_900_000_021, trigger_window_end: 1_900_003_621,
   outcome_window_start: 1_900_003_621, outcome_window_end: 1_900_007_221,
-  trigger_slot: 0, outcome_slot: 0, evidence: { trigger: [], outcome: [], expiration: null },
+  trigger_slot: 0, outcome_slot: 0, slot_seconds: 1800,
+  pool_wei: '0', dispatched_wei: '0', undispatched_pool_wei: '0', evidence: { trigger: [], outcome: [], expiration: null },
 };
-type RpcResponse = { status: string; execution?: string };
-type Fixture = { count: number; receipt?: RpcResponse; sends: unknown[]; reads: string[]; position: boolean };
+type RpcResponse = { status: string; execution?: string | { mode?: string; execution_result?: string }[] };
+type Fixture = { count: number; receipt?: RpcResponse; sends: unknown[]; reads: string[]; position: boolean; market: typeof market; chainTimestamp: number | null };
 
 function encoded(value: string | number) {
   return Buffer.from(abi.calldata.encode(value)).toString('hex');
@@ -37,7 +39,7 @@ async function wire(page: Page, fixture: Fixture) {
       expect(params[0].to.toLowerCase()).toBe(address);
       expect(params[0].transaction_hash_variant).toBe('latest-final');
       if (bytes.includes('market_count')) { fixture.reads.push('market_count'); result = encoded(fixture.count); }
-      else if (bytes.includes('get_market')) { fixture.reads.push('get_market'); result = encoded(JSON.stringify(market)); }
+      else if (bytes.includes('get_market')) { fixture.reads.push('get_market'); result = encoded(JSON.stringify(fixture.market)); }
       else if (bytes.includes('get_position')) {
         fixture.reads.push('get_position');
         result = encoded(JSON.stringify(fixture.position ? { yes: true, stake: market.stake, dispatched: false, claimable: '0' } : null));
@@ -46,9 +48,14 @@ async function wire(page: Page, fixture: Fixture) {
       result = fixture.receipt ? {
         hash, status: fixture.receipt.status, from_address: account, to_address: address, value: market.stake,
         data: { calldata: Buffer.from(abi.calldata.encode(abi.calldata.makeCalldataObject("predict", [0, true], undefined))).toString("base64") },
-        consensus_data: { leader_receipt: { execution_result: fixture.receipt.execution } },
+        consensus_data: { leader_receipt: Array.isArray(fixture.receipt.execution)
+          ? fixture.receipt.execution
+          : { execution_result: fixture.receipt.execution } },
         triggered_transactions: [],
       } : null;
+    } else if (method === 'eth_getBlockByNumber') {
+      expect(params).toEqual(['latest', false]);
+      result = fixture.chainTimestamp === null ? null : { timestamp: `0x${fixture.chainTimestamp.toString(16)}` };
     } else if (method === 'eth_estimateGas') result = '0x10000';
     else if (method === 'eth_chainId') result = '0xf22f';
     else if (method === 'eth_getTransactionCount') result = '0x0';
@@ -94,7 +101,7 @@ async function wallet(page: Page, fixture: Fixture) {
   }, { account });
 }
 
-function fresh(): Fixture { return { count: 1, sends: [], reads: [], position: false }; }
+function fresh(): Fixture { return { count: 1, sends: [], reads: [], position: false, market: { ...market }, chainTimestamp: market.created_at }; }
 async function hydrated(page: Page) {
   await expect(page.locator('html')).toHaveAttribute('data-forkpoint-hydrated', 'true', { timeout: 30_000 });
 }
@@ -104,6 +111,7 @@ test('keyboard navigation, responsive layout and accessible explorer with RPC fi
   await wire(page, fixture);
   await page.goto('/');
   await hydrated(page);
+  await expect(page.getByRole('heading', { name: 'A release contains the required source' })).toBeVisible();
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
   await page.getByRole('navigation').getByRole('link', { name: 'Markets' }).click();
@@ -149,13 +157,61 @@ test('wallet gating, payable submission, refresh recovery, execution success and
   await expect(page.getByText('Finalized · Execution unverified', { exact: true })).toBeVisible();
   expect(fixture.sends).toHaveLength(1);
   fixture.position = true;
-  fixture.receipt.execution = 'SUCCESS';
+  fixture.receipt.execution = [
+    { mode: 'leader', execution_result: 'SUCCESS' },
+    { mode: 'validator', execution_result: 'ERROR' },
+  ];
   await page.getByRole('button', { name: 'Refresh receipts' }).click();
   await expect(page.getByText('Finalized · Success', { exact: true })).toBeVisible();
   await expect(page.getByText('Your position · YES', { exact: true })).toBeVisible();
   expect(fixture.reads).toContain('get_position');
   await page.getByRole('button', { name: 'Disconnect' }).click();
   await expect(page.getByRole('button', { name: 'Connect wallet' }).first()).toBeVisible();
+});
+
+test('settlement controls follow the deployed market response and Studionet time', async ({ page }) => {
+  const fixture = fresh();
+  fixture.market.state = 'PREDICTIONS_CLOSED';
+  fixture.chainTimestamp = market.trigger_window_start - 1;
+  await wire(page, fixture);
+  await page.clock.setFixedTime(new Date('2025-01-01T00:00:00Z'));
+  await page.goto('/markets/0');
+  await hydrated(page);
+  const refresh = page.getByRole('button', { name: 'Refresh', exact: true });
+  const waiting = page.getByText('No settlement action is currently eligible.', { exact: false });
+  const trigger = page.getByRole('button', { name: 'Check trigger' });
+  const outcome = page.getByRole('button', { name: 'Check outcome' });
+  const expire = page.getByRole('button', { name: 'Expire unresolved market' });
+
+  await expect(waiting).toBeVisible();
+  fixture.market.state = 'TRIGGER_CHECK';
+  fixture.chainTimestamp = market.trigger_window_start;
+  await refresh.click();
+  await expect(trigger).toBeVisible();
+  await expect(trigger).toBeDisabled();
+
+  fixture.market.trigger_slot = 1;
+  await refresh.click();
+  await expect(waiting).toBeVisible();
+  await expect(trigger).toHaveCount(0);
+  fixture.chainTimestamp = market.trigger_window_start + market.slot_seconds;
+  await refresh.click();
+  await expect(trigger).toBeVisible();
+
+  fixture.market = { ...fixture.market, state: 'OUTCOME_CHECK', stored_state: 'ACTIVE', merged_at: market.cutoff };
+  fixture.chainTimestamp = market.outcome_window_start;
+  await refresh.click();
+  await expect(outcome).toBeVisible();
+  await expect(trigger).toHaveCount(0);
+  fixture.chainTimestamp = market.outcome_window_end;
+  await refresh.click();
+  await expect(expire).toBeVisible();
+  await expect(outcome).toHaveCount(0);
+
+  fixture.chainTimestamp = null;
+  await refresh.click();
+  await expect(page.getByText('Studionet time is unavailable. Refresh to check again.')).toBeVisible();
+  await expect(expire).toHaveCount(0);
 });
 
 

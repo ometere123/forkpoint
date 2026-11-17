@@ -183,9 +183,16 @@ def _release_blob(repo_path, sha, expected_size):
 
 
 def _python_block(statements):
-    if statements:
-        yield statements
+    if not statements:
+        return
+    reachable = []
     for statement in statements:
+        reachable.append(statement)
+        if isinstance(statement, (ast.Return, ast.Raise, ast.Break, ast.Continue)):
+            break
+    if reachable:
+        yield reachable
+    for statement in reachable:
         yield from _python_blocks(statement)
 
 
@@ -229,6 +236,7 @@ def _line_marker_match(path, text, needle):
 
     try:
         module = ast.parse(text, filename=path)
+        compile(text, path, "exec")
         blocks = list(_python_blocks(module))
     except (SyntaxError, RecursionError) as exc:
         raise EvidenceUnavailable("github_python_source_unparseable") from exc
@@ -236,6 +244,11 @@ def _line_marker_match(path, text, needle):
     marker = needle.split("\n")
     for block in blocks:
         for start, statement in enumerate(block):
+            if isinstance(statement, (ast.FunctionDef, ast.AsyncFunctionDef)) and statement.decorator_list:
+                first = min(decorator.lineno for decorator in statement.decorator_list) - 1
+                last = first + len(marker)
+                if lines[first:last] == marker and _substantive_python_node(statement):
+                    return True, "python_statement_match"
             first = statement.lineno - 1
             last = first + len(marker)
             if lines[first:last] != marker:

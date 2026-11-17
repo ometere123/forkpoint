@@ -28,7 +28,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
         {account && chain !== CHAIN && <button className="button small primary" onClick={switchWallet}>Switch to Studionet</button>}
         {account && <button className="button small secondary" onClick={disconnect} title={account} aria-label="Disconnect"><Wallet size={16} /> <span>{account.slice(0,6)}…{account.slice(-4)}</span><span className="disconnect-label"> · Disconnect</span></button>}
       </div>
-    </div></header>
+    </div>
+      <div className="network-notice">
+        <p className="wrap"><strong>Experimental Studionet preview.</strong> Use test GEN only. Settlement and payouts are still being verified.</p>
+      </div>
+    </header>
     {walletError && <p role="alert" className="wrap callout alert top-alert">{walletError}</p>}
     {account && chain !== CHAIN && <p role="status" className="wrap callout top-alert">Wrong network. Switch to Studionet 61999 to sign transactions.</p>}
     <main id="main" tabIndex={-1}>{children}</main>

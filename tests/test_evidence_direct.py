@@ -288,6 +288,10 @@ def test_validator_rejects_fabricated_facts_and_different_observations(evidence_
      'integration_candidate = """sample feature\n"""', "RESOLVED_NO"),
     ("settings = load_settings()\napply(settings)",
      "settings = load_settings()\napply(settings)\nif broken syntax", "INCONCLUSIVE"),
+    ("    settings = load_settings()\n    apply(settings)",
+     "def run():\n    return\n    settings = load_settings()\n    apply(settings)", "RESOLVED_NO"),
+    ("settings = load_settings()\napply(settings)",
+     "return\nsettings = load_settings()\napply(settings)", "INCONCLUSIVE"),
 ])
 def test_python_evidence_requires_executable_syntax(evidence_market, direct_vm, needle, source, verdict):
     contract, specification = evidence_market

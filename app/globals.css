@@ -32,6 +32,8 @@ button:disabled { cursor: not-allowed; opacity: .58; }
 .skip { position: fixed; z-index: 10; top: 5px; left: 5px; transform: translateY(-150%); padding: 12px; background: var(--white); }
 .skip:focus { transform: none; }
 .site-head { background: var(--paper); border-bottom: 1px solid var(--line); }
+.network-notice { border-top: 1px solid var(--line); background: var(--lime); color: var(--green); font-size: .85rem; }
+.network-notice p { margin-block: 0; padding-block: 9px; }
 .nav { display: flex; align-items: center; justify-content: space-between; min-height: 76px; gap: 24px; }
 .brand { display: inline-flex; align-items: center; gap: 10px; font-size: .9rem; font-weight: 700; letter-spacing: .11em; white-space: nowrap; }
 .brand-icon { inline-size: 34px; block-size: 34px; display: inline-grid; place-items: center; border-radius: 10px; background: var(--green); color: white; }

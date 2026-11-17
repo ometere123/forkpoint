@@ -18,10 +18,10 @@ export type MarketSpec = {
   cutoff: number; trigger_deadline: number; outcome_deadline: number; stake: string; limit: number;
 };
 export type Market = MarketSpec & {
-  id: number; state: string; created_at: number; yes_count: number; no_count: number;
+  id: number; state: string; stored_state: string; created_at: number; yes_count: number; no_count: number;
   trigger_window_start: number; trigger_window_end: number; outcome_window_start: number; outcome_window_end: number;
-  trigger_slot: number; outcome_slot: number; merged_at: number | null;
-  can_check_trigger: boolean; can_check_outcome: boolean; can_expire: boolean; evidence?: { trigger: Evidence[]; outcome: Evidence[]; expiration: unknown }; policy?: string;
+  trigger_slot: number; outcome_slot: number; slot_seconds: number; merged_at: number | null;
+  evidence?: { trigger: Evidence[]; outcome: Evidence[]; expiration: unknown }; policy?: string;
 };
 export type Evidence = { slot: number; checked_at: number; facts: { verdict: string; reason: string; sources?: string[] } };
 export type Position = {
@@ -132,9 +132,10 @@ export async function write(provider: Wallet, account: Hex, method: Method, args
   return hash;
 }
 
+type ReceiptRecord = { mode?: string; execution_result?: string };
 type TxRecord = {
   hash?: Hex; status?: string; statusName?: string; from_address?: Hex; to_address?: Hex; data?: { calldata?: string };
-  consensus_data?: { leader_receipt?: { execution_result?: string } | { execution_result?: string }[] };
+  consensus_data?: { leader_receipt?: ReceiptRecord | ReceiptRecord[] };
   triggered_by?: Hex; triggered_transactions?: unknown[]; value?: string | number; value_credited?: boolean;
 };
 async function rpc(method: string, params: unknown[]) {
@@ -152,6 +153,13 @@ async function rpc(method: string, params: unknown[]) {
   if (json.error) throw new Error(json.error.message ?? 'Studionet RPC rejected the request.');
   return json.result;
 }
+export async function latestBlockTimestamp() {
+  const block = await rpc('eth_getBlockByNumber', ['latest', false]) as { timestamp?: unknown } | null;
+  const timestamp = typeof block?.timestamp === 'string' && /^0x[\da-f]+$/i.test(block.timestamp)
+    ? Number(block.timestamp) : NaN;
+  if (!Number.isSafeInteger(timestamp) || timestamp <= 0) throw new Error('Studionet time is unavailable.');
+  return timestamp;
+}
 async function calldataDigest(bytes: Uint8Array) {
   return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', Uint8Array.from(bytes))), byte => byte.toString(16).padStart(2, '0')).join('');
 }
@@ -160,6 +168,12 @@ export function intentDigest(method: Method, args: CalldataEncodable[]) {
 }
 function exactValue(value?: number | string) {
   return typeof value === 'number' && !Number.isSafeInteger(value) ? null : value;
+}
+function executionResult(receipts: ReceiptRecord | ReceiptRecord[] | undefined) {
+  if (Array.isArray(receipts)) {
+    return (receipts.find(receipt => receipt?.mode === 'leader') ?? receipts.find(receipt => receipt?.execution_result))?.execution_result;
+  }
+  return receipts?.execution_result;
 }
 export async function getReceipt(hash: Hex, account: Hex, digest: string, value: string) {
   const tx = await rpc('eth_getTransactionByHash', [hash]) as TxRecord | null;
@@ -177,7 +191,7 @@ export async function getReceipt(hash: Hex, account: Hex, digest: string, value:
     return { phase: ['CANCELED', 'CANCELLED', 'UNDETERMINED'].includes(status) ? 'Execution failed' : status, children };
   }
   const receipts = tx.consensus_data?.leader_receipt;
-  const result = (Array.isArray(receipts) ? receipts.at(-1) : receipts)?.execution_result;
+  const result = executionResult(receipts);
   return { phase: result === 'SUCCESS' ? 'Finalized · Success' : result ? 'Execution failed' : 'Finalized · Execution unverified', children };
 }
 export async function deliveryStatus(parent: Hex, children: Hex[], account: Hex, market: number) {
@@ -189,7 +203,7 @@ export async function deliveryStatus(parent: Hex, children: Hex[], account: Hex,
     if (!tx || tx.hash?.toLowerCase() !== hash.toLowerCase() || (tx.triggered_by && tx.triggered_by.toLowerCase() !== parent.toLowerCase()) || tx.from_address?.toLowerCase() !== needAddress().toLowerCase() || tx.to_address?.toLowerCase() !== account.toLowerCase()) continue;
     if (String(exactValue(tx.value)) !== position.dispatched_amount) continue;
     const receipts = tx.consensus_data?.leader_receipt;
-    const result = (Array.isArray(receipts) ? receipts.at(-1) : receipts)?.execution_result;
+    const result = executionResult(receipts);
     const status = tx.statusName ?? tx.status;
     if (status === 'FINALIZED' && tx.value_credited === true && (!result || result === 'SUCCESS')) return 'Recipient credit verified';
     if (status === 'FINALIZED' && result && result !== 'SUCCESS' || status === 'CANCELED' || status === 'UNDETERMINED') return 'Transfer failed · No automatic retry';

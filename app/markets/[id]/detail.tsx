@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowDown, ArrowLeft, ArrowUpRight, GitMerge, PackageCheck } from 'lucide-react';
-import { ADDRESS, CHAIN, errorMessage, formatGen, getMarket, getPosition, marketCount, type Market, type Method, type Position } from '../../../lib/chain';
+import { ADDRESS, CHAIN, errorMessage, formatGen, getMarket, getPosition, latestBlockTimestamp, marketCount, type Market, type Method, type Position } from '../../../lib/chain';
 import { Availability, dateLabel, History, Status, WalletGate } from '../../shared';
 import { useWallet } from '../../wallet';
 
@@ -22,6 +22,19 @@ function evidenceSources(value: unknown, depth = 0): string[] {
   return [...sources, ...Object.values(item).flatMap(child => evidenceSources(child, depth + 1))];
 }
 
+function settlementAction(market?: Market, timestamp?: number | null) {
+  if (!market || timestamp == null || (market.stored_state !== 'CREATED' && market.stored_state !== 'ACTIVE')) return null;
+  const trigger = market.stored_state === 'CREATED';
+  const opens = trigger ? market.trigger_window_start : market.outcome_window_start;
+  const closes = trigger ? market.trigger_window_end : market.outcome_window_end;
+  if (timestamp < opens) return null;
+  if (timestamp >= closes) return 'expire';
+  const lastSlot = trigger ? market.trigger_slot : market.outcome_slot;
+  const currentSlot = Math.floor((timestamp - opens) / market.slot_seconds) + 1;
+  if (!(currentSlot > lastSlot)) return null;
+  return trigger ? 'check_trigger' : 'check_outcome';
+}
+
 export function Detail({ id }: { id: number }) {
   const { account, chain, busy, ready, revision, submit } = useWallet();
   const [market, setMarket] = useState<Market>();
@@ -30,15 +43,22 @@ export function Detail({ id }: { id: number }) {
   const [actionError, setActionError] = useState('');
   const [refresh, setRefresh] = useState(0);
   const [side, setSide] = useState<boolean | null>(null);
+  const [chainTimestamp, setChainTimestamp] = useState<number | null>();
   useEffect(() => {
     if (!ADDRESS) return;
     let stopped = false;
-    setLoadError(''); setPosition(undefined);
+    setLoadError(''); setPosition(undefined); setChainTimestamp(undefined);
     (async () => {
       const count = await marketCount();
       if (id >= count) throw new Error('This market has not been created.');
       const current = await getMarket(id);
-      if (!stopped) setMarket(current);
+      if (stopped) return;
+      setMarket(current);
+      if (current.stored_state === 'CREATED' || current.stored_state === 'ACTIVE') {
+        void latestBlockTimestamp().catch(() => null).then(timestamp => {
+          if (!stopped) setChainTimestamp(timestamp);
+        });
+      }
       if (account) {
         const currentPosition = await getPosition(id, account);
         if (!stopped) setPosition(currentPosition);
@@ -60,6 +80,7 @@ export function Detail({ id }: { id: number }) {
   const sources = [...new Set(evidenceSources(evidence))];
   const settled = !!market && ['VOID', 'INCONCLUSIVE', 'RESOLVED_YES', 'RESOLVED_NO'].includes(market.state);
   const hasRoom = !!market && market.yes_count + market.no_count < market.limit;
+  const settlement = settlementAction(market, chainTimestamp);
 
   return <section className="wrap page">
     <Link href="/markets" className="back"><ArrowLeft size={15} /> Back to markets</Link>
@@ -128,11 +149,14 @@ export function Detail({ id }: { id: number }) {
         <section className="panel" aria-labelledby="settlement"><h2 id="settlement">Settlement</h2>
           <p>Anyone can initiate the next eligible check. The contract enforces the settlement windows.</p>
           <dl className="metrics"><div><dt>Trigger window opens</dt><dd>{dateLabel(market.trigger_window_start)}</dd></div><div><dt>Outcome window opens</dt><dd>{dateLabel(market.outcome_window_start)}</dd></div></dl>
-          {market.can_check_trigger && <button className="button secondary" disabled={!enabled} onClick={() => transact('check_trigger')}>Check trigger</button>}
-          {market.can_check_outcome && <button className="button secondary" disabled={!enabled} onClick={() => transact('check_outcome')}>Check outcome</button>}
-          {market.can_expire && <p className="muted">The evidence window ended. Submit expiry to make stakes refundable.</p>}
-          {market.can_expire && <button className="button plain" disabled={!enabled} onClick={() => transact('expire')}>Expire unresolved market</button>}
-          {!settled && !market.can_check_trigger && !market.can_check_outcome && !market.can_expire && <p className="muted">No settlement action is currently eligible. Refresh to check the next window.</p>}
+          {settlement === 'check_trigger' && <button className="button secondary" type="button" disabled={!enabled} onClick={() => transact('check_trigger')}>Check trigger</button>}
+          {settlement === 'check_outcome' && <button className="button secondary" type="button" disabled={!enabled} onClick={() => transact('check_outcome')}>Check outcome</button>}
+          {settlement === 'expire' && <>
+            <p className="muted">The evidence window ended. Submit expiry to make stakes refundable.</p>
+            <button className="button plain" type="button" disabled={!enabled} onClick={() => transact('expire')}>Expire unresolved market</button>
+          </>}
+          {!settled && !settlement && typeof chainTimestamp === 'number' && <p className="muted">No settlement action is currently eligible. Refresh to check the next window.</p>}
+          {!settled && chainTimestamp === null && <p className="muted">Studionet time is unavailable. Refresh to check again.</p>}
           {settled && <Status state={market.state} />}
         </section>
       </aside>
