@@ -1,0 +1,500 @@
+{
+  "kind": "live-studionet-replacement-boundary-smoke",
+  "observedAt": "2026-11-17T19:57:34.268Z",
+  "chainId": 61999,
+  "endpoint": "https://studio.genlayer.com/api",
+  "address": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+  "market": 0,
+  "sourceSha256": "04b5112f2624699562f680627f1d8c56fddeae8ac4d42de7f69ff493405af8dd",
+  "wallets": [
+    "0xfD8D2304D17430F3774280AEfa1d6037c8791bD6",
+    "0xAA9B238f1Bb5f961221C54Ff38c9c58C63DB013f"
+  ],
+  "baseline": {
+    "a": "1000000000000000",
+    "b": "1000000000000000",
+    "contract": "0"
+  },
+  "observedDeltas": {
+    "exactStake": {
+      "aBefore": "1000000000000000",
+      "aAfter": "999999999999000",
+      "contractBefore": "0",
+      "contractAfter": "1000"
+    },
+    "incorrectStake": {
+      "bBefore": "1000000000000000",
+      "bAfter": "1000000000000000",
+      "contractBefore": "1000",
+      "contractAfter": "1000"
+    },
+    "duplicateStake": {
+      "aBefore": "999999999999000",
+      "aAfter": "999999999999000",
+      "contractBefore": "1000",
+      "contractAfter": "1000"
+    },
+    "lateStake": {
+      "bBefore": "1000000000000000",
+      "bAfter": "1000000000000000",
+      "contractBefore": "1000",
+      "contractAfter": "1000"
+    },
+    "claim": {
+      "aBefore": "999999999999000",
+      "aAfter": "1000000000000000",
+      "contractBefore": "1000",
+      "contractAfter": "0"
+    }
+  },
+  "transactions": {
+    "fundA": {
+      "hash": "0x27e6584cd71106f03748760388fd391a95b0d08eecaef0a4b130d1e9a263198c",
+      "status": "FINALIZED",
+      "consensusResult": "NO_MAJORITY",
+      "type": 0,
+      "from": null,
+      "to": "0xfD8D2304D17430F3774280AEfa1d6037c8791bD6",
+      "value": "1000000000000000",
+      "valueCredited": true,
+      "triggeredBy": null,
+      "triggeredOn": null,
+      "children": [],
+      "created": "1794944988",
+      "leaderReceipts": []
+    },
+    "fundB": {
+      "hash": "0xc16e31d3d0fa482f7cd63d3273f1912167a0cb909ee3b2b6c10c5218296c03fd",
+      "status": "FINALIZED",
+      "consensusResult": "NO_MAJORITY",
+      "type": 0,
+      "from": null,
+      "to": "0xAA9B238f1Bb5f961221C54Ff38c9c58C63DB013f",
+      "value": "1000000000000000",
+      "valueCredited": true,
+      "triggeredBy": null,
+      "triggeredOn": null,
+      "children": [],
+      "created": "1794944990",
+      "leaderReceipts": []
+    },
+    "create": {
+      "hash": "0xd7f617771331d2ad1b20d149459f920f41c1cbeed4ed302fed172a6f5a7f5f01",
+      "status": "FINALIZED",
+      "consensusResult": "MAJORITY_AGREE",
+      "type": 2,
+      "from": "0xfD8D2304D17430F3774280AEfa1d6037c8791bD6",
+      "to": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+      "value": "0",
+      "valueCredited": false,
+      "triggeredBy": null,
+      "triggeredOn": null,
+      "children": [],
+      "created": "1794944993",
+      "calldata": "FgRhcmdzDawjeyJ0cmlnZ2VyX3JlcG9faWQiOjEzNjI0OTAsInByX251bWJlciI6NzUyMywidGFyZ2V0X3JlcG9faWQiOjEzNjI0OTAsInJlbGVhc2VfdGFnIjoiZm9ya3BvaW50LXN0dWRpb25ldC1yZXBsYWNlbWVudC12b2lkLXNtb2tlLTE3OTQ5NDQ5OTEiLCJmZWF0dXJlIjoiRm9ya3BvaW50IHJlcGxhY2VtZW50IHJlZnVuZCBzbW9rZSB0ZXN0IGZvciBhIGNsb3NlZCwgdW5tZXJnZWQgcHVsbCByZXF1ZXN0IiwiY3JpdGVyaWEiOlt7InBhdGgiOiJzcmMvcmVxdWVzdHMvYXV0aC5weSIsIm5lZWRsZSI6ImRlZiBfZm9ya3BvaW50X3Ntb2tlX21hcmtlcl9vbmUoKTpcbiAgICByZXR1cm4gXCJzbW9rZS10ZXN0LTFcIiJ9LHsicGF0aCI6InRlc3RzL3Rlc3RfcmVxdWVzdHMucHkiLCJuZWVkbGUiOiJkZWYgdGVzdF9mb3JrcG9pbnRfc21va2VfbWFya2VyX3R3bygpOlxuICAgIGFzc2VydCBcInNtb2tlLXRlc3QtMlwiIn1dLCJjdXRvZmYiOjE3OTQ5NDUyMDEsInRyaWdnZXJfZGVhZGxpbmUiOjE3OTQ5NDUyMTMsIm91dGNvbWVfZGVhZGxpbmUiOjE3OTQ5NDUyMTQsInN0YWtlIjoiMTAwMCIsImxpbWl0IjoyfQZtZXRob2RsY3JlYXRlX21hcmtldA==",
+      "leaderReceipts": [
+        {
+          "mode": "leader",
+          "execution": "SUCCESS",
+          "result": "0",
+          "genvm": {
+            "stderr": "",
+            "stdout": "",
+            "raw_error": null,
+            "error_code": null,
+            "error_description": null
+          },
+          "pending": []
+        }
+      ]
+    },
+    "exactStake": {
+      "hash": "0x68d3dcdb57826510c17082d78bfa6c2ccf2b507de34845f72bc60c6f739f961d",
+      "status": "FINALIZED",
+      "consensusResult": "MAJORITY_AGREE",
+      "type": 2,
+      "from": "0xfD8D2304D17430F3774280AEfa1d6037c8791bD6",
+      "to": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+      "value": "1000",
+      "valueCredited": true,
+      "triggeredBy": null,
+      "triggeredOn": null,
+      "children": [],
+      "created": "1794945041",
+      "calldata": "FgRhcmdzFQEQBm1ldGhvZDxwcmVkaWN0",
+      "leaderReceipts": [
+        {
+          "mode": "leader",
+          "execution": "SUCCESS",
+          "result": "ACCEPTED",
+          "genvm": {
+            "stderr": "",
+            "stdout": "",
+            "raw_error": null,
+            "error_code": null,
+            "error_description": null
+          },
+          "pending": []
+        }
+      ]
+    },
+    "incorrectStake": {
+      "hash": "0x1069d85599fcafe3df075df78057e0a9a4a9157bef4684ecc43264b0c8c400d7",
+      "status": "FINALIZED",
+      "consensusResult": "MAJORITY_AGREE",
+      "type": 2,
+      "from": "0xAA9B238f1Bb5f961221C54Ff38c9c58C63DB013f",
+      "to": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+      "value": "999",
+      "valueCredited": true,
+      "triggeredBy": null,
+      "triggeredOn": null,
+      "children": [
+        "0x5221b1d73e1614de6fab43e1884280df15cb6b9783d75fe52be116519cff1f0c"
+      ],
+      "created": "1794945104",
+      "calldata": "FgRhcmdzFQEIBm1ldGhvZDxwcmVkaWN0",
+      "leaderReceipts": [
+        {
+          "mode": "leader",
+          "execution": "SUCCESS",
+          "result": "REJECTED_INCORRECT_STAKE_REFUND_EMITTED_UNCONFIRMED",
+          "genvm": {
+            "stderr": "",
+            "stdout": "",
+            "raw_error": null,
+            "error_code": null,
+            "error_description": null
+          },
+          "pending": [
+            {
+              "on": "finalized",
+              "value": 999,
+              "address": "0xAA9B238f1Bb5f961221C54Ff38c9c58C63DB013f",
+              "is_eth_send": true
+            }
+          ]
+        }
+      ]
+    },
+    "incorrectStakeChild": {
+      "hash": "0x5221b1d73e1614de6fab43e1884280df15cb6b9783d75fe52be116519cff1f0c",
+      "status": "FINALIZED",
+      "consensusResult": "NO_MAJORITY",
+      "type": 0,
+      "from": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+      "to": "0xAA9B238f1Bb5f961221C54Ff38c9c58C63DB013f",
+      "value": "999",
+      "valueCredited": true,
+      "triggeredBy": "0x1069d85599fcafe3df075df78057e0a9a4a9157bef4684ecc43264b0c8c400d7",
+      "triggeredOn": "finalized",
+      "children": [],
+      "created": "1794945138",
+      "leaderReceipts": []
+    },
+    "duplicateStake": {
+      "hash": "0x1ad9cbe24bdd34ef849059fb3d5224def1a96a75e52193548f6fb937a90c77d5",
+      "status": "FINALIZED",
+      "consensusResult": "MAJORITY_AGREE",
+      "type": 2,
+      "from": "0xfD8D2304D17430F3774280AEfa1d6037c8791bD6",
+      "to": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+      "value": "1000",
+      "valueCredited": true,
+      "triggeredBy": null,
+      "triggeredOn": null,
+      "children": [
+        "0xf7bb5bbe84e5a861f548c090c6893d4daa81a8580d580c9e74513aa41ba1addb"
+      ],
+      "created": "1794945152",
+      "calldata": "FgRhcmdzFQEIBm1ldGhvZDxwcmVkaWN0",
+      "leaderReceipts": [
+        {
+          "mode": "leader",
+          "execution": "SUCCESS",
+          "result": "REJECTED_POSITION_EXISTS_REFUND_EMITTED_UNCONFIRMED",
+          "genvm": {
+            "stderr": "",
+            "stdout": "",
+            "raw_error": null,
+            "error_code": null,
+            "error_description": null
+          },
+          "pending": [
+            {
+              "on": "finalized",
+              "value": 1000,
+              "address": "0xfD8D2304D17430F3774280AEfa1d6037c8791bD6",
+              "is_eth_send": true
+            }
+          ]
+        }
+      ]
+    },
+    "duplicateStakeChild": {
+      "hash": "0xf7bb5bbe84e5a861f548c090c6893d4daa81a8580d580c9e74513aa41ba1addb",
+      "status": "FINALIZED",
+      "consensusResult": "NO_MAJORITY",
+      "type": 0,
+      "from": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+      "to": "0xfD8D2304D17430F3774280AEfa1d6037c8791bD6",
+      "value": "1000",
+      "valueCredited": true,
+      "triggeredBy": "0x1ad9cbe24bdd34ef849059fb3d5224def1a96a75e52193548f6fb937a90c77d5",
+      "triggeredOn": "finalized",
+      "children": [],
+      "created": "1794945186",
+      "leaderReceipts": []
+    },
+    "lateStake": {
+      "hash": "0x13f65df63875f8270cbbf5cdecf4d85f09606d129e5f86ae69b545619e176f68",
+      "status": "FINALIZED",
+      "consensusResult": "MAJORITY_AGREE",
+      "type": 2,
+      "from": "0xAA9B238f1Bb5f961221C54Ff38c9c58C63DB013f",
+      "to": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+      "value": "1000",
+      "valueCredited": true,
+      "triggeredBy": null,
+      "triggeredOn": null,
+      "children": [
+        "0xba0ee2c47a0ce117e31de8098c64cf5bf5eb5d52594caee6e0ba46f5570ffad0"
+      ],
+      "created": "1794945219",
+      "calldata": "FgRhcmdzFQEIBm1ldGhvZDxwcmVkaWN0",
+      "leaderReceipts": [
+        {
+          "mode": "leader",
+          "execution": "SUCCESS",
+          "result": "REJECTED_PREDICTIONS_CLOSED_REFUND_EMITTED_UNCONFIRMED",
+          "genvm": {
+            "stderr": "",
+            "stdout": "",
+            "raw_error": null,
+            "error_code": null,
+            "error_description": null
+          },
+          "pending": [
+            {
+              "on": "finalized",
+              "value": 1000,
+              "address": "0xAA9B238f1Bb5f961221C54Ff38c9c58C63DB013f",
+              "is_eth_send": true
+            }
+          ]
+        }
+      ]
+    },
+    "lateStakeChild": {
+      "hash": "0xba0ee2c47a0ce117e31de8098c64cf5bf5eb5d52594caee6e0ba46f5570ffad0",
+      "status": "FINALIZED",
+      "consensusResult": "NO_MAJORITY",
+      "type": 0,
+      "from": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+      "to": "0xAA9B238f1Bb5f961221C54Ff38c9c58C63DB013f",
+      "value": "1000",
+      "valueCredited": true,
+      "triggeredBy": "0x13f65df63875f8270cbbf5cdecf4d85f09606d129e5f86ae69b545619e176f68",
+      "triggeredOn": "finalized",
+      "children": [],
+      "created": "1794945255",
+      "leaderReceipts": []
+    },
+    "trigger": {
+      "hash": "0x7c03b3a60b1266afae10b6b3d089eec37fa1e37dda44f297350234be13c0aa19",
+      "status": "FINALIZED",
+      "consensusResult": "MAJORITY_AGREE",
+      "type": 2,
+      "from": "0xfD8D2304D17430F3774280AEfa1d6037c8791bD6",
+      "to": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+      "value": "0",
+      "valueCredited": false,
+      "triggeredBy": null,
+      "triggeredOn": null,
+      "children": [],
+      "created": "1794945265",
+      "calldata": "FgRhcmdzDQEGbWV0aG9kbGNoZWNrX3RyaWdnZXI=",
+      "leaderReceipts": [
+        {
+          "mode": "leader",
+          "execution": "SUCCESS",
+          "result": "VOID",
+          "genvm": {
+            "stderr": "",
+            "stdout": "",
+            "raw_error": null,
+            "error_code": null,
+            "error_description": null
+          },
+          "pending": []
+        }
+      ]
+    },
+    "claim": {
+      "hash": "0x3267dd0c03acc0dd73ede8ecb9c1364b49635a7769ec4fc99e39676794dc2d3a",
+      "status": "FINALIZED",
+      "consensusResult": "MAJORITY_AGREE",
+      "type": 2,
+      "from": "0xfD8D2304D17430F3774280AEfa1d6037c8791bD6",
+      "to": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+      "value": "0",
+      "valueCredited": false,
+      "triggeredBy": null,
+      "triggeredOn": null,
+      "children": [
+        "0x1d0c67e70013b8ffa094ebbfb1cc9153590d27b174b449f6a63c8809016084a7"
+      ],
+      "created": "1794945313",
+      "calldata": "FgRhcmdzDQEGbWV0aG9kLGNsYWlt",
+      "leaderReceipts": [
+        {
+          "mode": "leader",
+          "execution": "SUCCESS",
+          "result": "EMITTED_UNCONFIRMED",
+          "genvm": {
+            "stderr": "",
+            "stdout": "",
+            "raw_error": null,
+            "error_code": null,
+            "error_description": null
+          },
+          "pending": [
+            {
+              "on": "finalized",
+              "value": 1000,
+              "address": "0xfD8D2304D17430F3774280AEfa1d6037c8791bD6",
+              "is_eth_send": true
+            }
+          ]
+        }
+      ]
+    },
+    "claimChild": {
+      "hash": "0x1d0c67e70013b8ffa094ebbfb1cc9153590d27b174b449f6a63c8809016084a7",
+      "status": "FINALIZED",
+      "consensusResult": "NO_MAJORITY",
+      "type": 0,
+      "from": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+      "to": "0xfD8D2304D17430F3774280AEfa1d6037c8791bD6",
+      "value": "1000",
+      "valueCredited": true,
+      "triggeredBy": "0x3267dd0c03acc0dd73ede8ecb9c1364b49635a7769ec4fc99e39676794dc2d3a",
+      "triggeredOn": "finalized",
+      "children": [],
+      "created": "1794945347",
+      "leaderReceipts": []
+    },
+    "duplicateClaim": {
+      "hash": "0x4299714fa20be6cb0a05667af13ba77f780f6f3850c582c311fc0d5374610dd8",
+      "status": "FINALIZED",
+      "consensusResult": "MAJORITY_AGREE",
+      "type": 2,
+      "from": "0xfD8D2304D17430F3774280AEfa1d6037c8791bD6",
+      "to": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+      "value": "0",
+      "valueCredited": false,
+      "triggeredBy": null,
+      "triggeredOn": null,
+      "children": [],
+      "created": "1794945358",
+      "calldata": "FgRhcmdzDQEGbWV0aG9kLGNsYWlt",
+      "leaderReceipts": [
+        {
+          "mode": "leader",
+          "execution": "ERROR",
+          "result": "CLAIM_ALREADY_DISPATCHED",
+          "genvm": {
+            "stderr": "",
+            "stdout": "",
+            "raw_error": null,
+            "error_code": null,
+            "error_description": null
+          },
+          "pending": []
+        }
+      ]
+    }
+  },
+  "final": {
+    "a": "1000000000000000",
+    "b": "1000000000000000",
+    "contract": "0",
+    "treasury": {
+      "deposited_wei": "1000",
+      "dispatched_wei": "1000",
+      "runtime_balance_wei": "0",
+      "undispatched_pool_wei": "0"
+    },
+    "market": {
+      "created_at": 1794944993,
+      "criteria": [
+        {
+          "needle": "def _forkpoint_smoke_marker_one():\n    return \"smoke-test-1\"",
+          "path": "src/requests/auth.py"
+        },
+        {
+          "needle": "def test_forkpoint_smoke_marker_two():\n    assert \"smoke-test-2\"",
+          "path": "tests/test_requests.py"
+        }
+      ],
+      "cutoff": 1794945201,
+      "dispatched_wei": "1000",
+      "evidence": {
+        "expiration": null,
+        "outcome": [],
+        "trigger": [
+          {
+            "checked_at": 1794945265,
+            "facts": {
+              "pr_id": 3887822072,
+              "pr_number": 7523,
+              "reason": "pull_unmerged_at_deadline",
+              "repo_id": 1362490,
+              "sources": [
+                "https://api.github.com/repositories/1362490/pulls/7523"
+              ],
+              "verdict": "VOID"
+            },
+            "slot": 1
+          }
+        ]
+      },
+      "feature": "Forkpoint replacement refund smoke test for a closed, unmerged pull request",
+      "id": 0,
+      "limit": 2,
+      "merged_at": null,
+      "no_count": 0,
+      "outcome_deadline": 1794945214,
+      "outcome_slot": 0,
+      "outcome_window_end": 1794952414,
+      "outcome_window_start": 1794948814,
+      "policy": "github-immutable-release-markers-v1",
+      "pool_wei": "1000",
+      "pr_number": 7523,
+      "refund_all": true,
+      "release_tag": "forkpoint-studionet-replacement-void-smoke-1794944991",
+      "slot_seconds": 1800,
+      "stake": "1000",
+      "state": "VOID",
+      "stored_state": "VOID",
+      "target_repo_id": 1362490,
+      "trigger_deadline": 1794945213,
+      "trigger_repo_id": 1362490,
+      "trigger_slot": 1,
+      "trigger_window_end": 1794948814,
+      "trigger_window_start": 1794945214,
+      "undispatched_pool_wei": "0",
+      "yes_count": 1
+    },
+    "aPosition": {
+      "claimable": "0",
+      "dispatched": true,
+      "dispatched_amount": "1000",
+      "dispatched_at": 1794945313,
+      "payout_status": "EMITTED_UNCONFIRMED",
+      "stake": "1000",
+      "yes": true
+    },
+    "bPosition": null
+  }
+}

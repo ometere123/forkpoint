@@ -21,11 +21,14 @@ const market = {
   trigger_slot: 0, outcome_slot: 0, slot_seconds: 1800,
   pool_wei: '0', dispatched_wei: '0', undispatched_pool_wei: '0', evidence: { trigger: [], outcome: [], expiration: null },
 };
-type RpcResponse = { status: string; execution?: string | { mode?: string; execution_result?: string }[] };
+type RpcResponse = { status: string; execution?: string | { mode?: string; execution_result?: string }[]; result?: string; children?: string[] };
 type Fixture = { count: number; receipt?: RpcResponse; sends: unknown[]; reads: string[]; position: boolean; market: typeof market; chainTimestamp: number | null };
 
 function encoded(value: string | number) {
   return Buffer.from(abi.calldata.encode(value)).toString('hex');
+}
+function encodedReturn(value: string) {
+  return Buffer.from(abi.calldata.encode(value)).toString('base64');
 }
 
 async function wire(page: Page, fixture: Fixture) {
@@ -45,13 +48,19 @@ async function wire(page: Page, fixture: Fixture) {
         result = encoded(JSON.stringify(fixture.position ? { yes: true, stake: market.stake, dispatched: false, claimable: '0' } : null));
       }
     } else if (method === 'eth_getTransactionByHash') {
-      result = fixture.receipt ? {
+      const requestedHash = params[0] as unknown as string;
+      const childHash = fixture.receipt?.children?.[0];
+      result = fixture.receipt && childHash && requestedHash === childHash ? {
+        hash: childHash, status: 'FINALIZED', from_address: address, to_address: account, value: market.stake,
+        value_credited: true, triggered_by: hash,
+        consensus_data: { leader_receipt: { execution_result: 'SUCCESS' } },
+      } : fixture.receipt ? {
         hash, status: fixture.receipt.status, from_address: account, to_address: address, value: market.stake,
         data: { calldata: Buffer.from(abi.calldata.encode(abi.calldata.makeCalldataObject("predict", [0, true], undefined))).toString("base64") },
         consensus_data: { leader_receipt: Array.isArray(fixture.receipt.execution)
-          ? fixture.receipt.execution
-          : { execution_result: fixture.receipt.execution } },
-        triggered_transactions: [],
+          ? fixture.receipt.execution.map((receipt, index) => ({ ...receipt, ...(index === 0 && fixture.receipt?.result ? { result: fixture.receipt.result } : {}) }))
+          : { execution_result: fixture.receipt.execution, ...(fixture.receipt.result ? { result: fixture.receipt.result } : {}) } },
+        triggered_transactions: fixture.receipt.children ?? [],
       } : null;
     } else if (method === 'eth_getBlockByNumber') {
       expect(params).toEqual(['latest', false]);
@@ -266,4 +275,27 @@ test('finalized execution error does not create a position with RPC fixtures', a
   await expect(page.getByText('Execution failed', { exact: true })).toBeVisible();
   await expect(page.getByText('Your position · YES', { exact: true })).toHaveCount(0);
   expect(fixture.sends).toHaveLength(1);
+});
+
+test('application-level rejected prediction shows refund delivery status', async ({ page }) => {
+  const fixture = fresh();
+  await wire(page, fixture);
+  await wallet(page, fixture);
+  await page.goto('/markets/0');
+  await hydrated(page);
+  await page.getByRole('button', { name: 'Connect wallet' }).first().click();
+  await page.getByRole('button', { name: 'Switch to Studionet' }).first().click();
+  await page.getByRole('button', { name: 'Predict YES' }).click();
+  await page.getByRole('button', { name: 'Continue to wallet' }).click();
+  await expect.poll(() => fixture.sends.length).toBe(1);
+  fixture.receipt = {
+    status: 'FINALIZED',
+    execution: [{ mode: 'leader', execution_result: 'SUCCESS' }],
+    result: encodedReturn('REJECTED_INCORRECT_STAKE_REFUND_EMITTED_UNCONFIRMED'),
+    children: ['0x' + '4'.repeat(64)],
+  };
+  await page.reload();
+  await expect(page.getByText('Application rejected · refund dispatched', { exact: true })).toBeVisible();
+  await expect(page.getByText('Recipient credit verified', { exact: true })).toBeVisible();
+  await expect(page.getByText('Your position · YES', { exact: true })).toHaveCount(0);
 });

@@ -1,0 +1,21 @@
+{
+  "network": "studionet",
+  "chainId": 61999,
+  "rpc": "https://studio.genlayer.com/api",
+  "contractAddress": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+  "contractExplorer": "https://explorer-studio.genlayer.com/address/0x2702C583b4d331f299B2f5988A9DeB476610f221",
+  "deploymentTransaction": "0xcf0fcedbc06320509560f10a7a01178a831e8bedc3d286e193fa8f227db0b87e",
+  "deploymentExplorer": "https://explorer-studio.genlayer.com/tx/0xcf0fcedbc06320509560f10a7a01178a831e8bedc3d286e193fa8f227db0b87e",
+  "sourceSha256": "04b5112f2624699562f680627f1d8c56fddeae8ac4d42de7f69ff493405af8dd",
+  "sourceParity": "exact-bytes",
+  "sourceCommit": "cfa575172da49de64f926658676abc54341ad45c",
+  "cliVersion": "0.39.1",
+  "genvmVersion": "v0.2.16",
+  "status": "FINALIZED",
+  "consensus": "MAJORITY_AGREE",
+  "fundedRelease": false,
+  "fundedBoundaryVerified": true,
+  "classification": "PUBLIC_TESTNET_BETA",
+  "evidence": "deployments/studionet-replacement-funded-evidence.json",
+  "notes": "Replacement for the historical candidate. Exact stake, wrong-stake, duplicate, late refund, VOID settlement and claim were exercised with disposable GEN; every tested refund child finalized with value_credited=true and the final treasury returned to zero. Full YES/NO/INCONCLUSIVE controlled-release lifecycles remain unverified, and native transfers are still non-atomic at the protocol boundary."
+}

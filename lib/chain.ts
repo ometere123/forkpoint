@@ -132,7 +132,10 @@ export async function write(provider: Wallet, account: Hex, method: Method, args
   return hash;
 }
 
-type ReceiptRecord = { mode?: string; execution_result?: string };
+type ReceiptRecord = {
+  mode?: string; execution_result?: string;
+  result?: string | { payload?: { readable?: unknown } };
+};
 type TxRecord = {
   hash?: Hex; status?: string; statusName?: string; from_address?: Hex; to_address?: Hex; data?: { calldata?: string };
   consensus_data?: { leader_receipt?: ReceiptRecord | ReceiptRecord[] };
@@ -175,6 +178,21 @@ function executionResult(receipts: ReceiptRecord | ReceiptRecord[] | undefined) 
   }
   return receipts?.execution_result;
 }
+function returnedValue(receipts: ReceiptRecord | ReceiptRecord[] | undefined) {
+  const receipt = Array.isArray(receipts)
+    ? (receipts.find(item => item?.mode === 'leader') ?? receipts.find(item => item?.result))
+    : receipts;
+  const raw = receipt?.result;
+  if (raw && typeof raw === 'object' && raw.payload && typeof raw.payload.readable === 'string') return raw.payload.readable;
+  if (typeof raw !== 'string' || typeof globalThis.atob !== 'function') return undefined;
+  try {
+    const bytes = Uint8Array.from(globalThis.atob(raw), char => char.charCodeAt(0));
+    let start = 0;
+    while (start < bytes.length && (bytes[start] < 32 || bytes[start] > 126)) start += 1;
+    const text = new TextDecoder().decode(bytes.slice(start)).trim();
+    return text.startsWith('REJECTED_') || text === 'ACCEPTED' ? text : undefined;
+  } catch { return undefined; }
+}
 export async function getReceipt(hash: Hex, account: Hex, digest: string, value: string) {
   const tx = await rpc('eth_getTransactionByHash', [hash]) as TxRecord | null;
   if (!tx) return { phase: 'Submitted', children: [] as Hex[] };
@@ -192,6 +210,13 @@ export async function getReceipt(hash: Hex, account: Hex, digest: string, value:
   }
   const receipts = tx.consensus_data?.leader_receipt;
   const result = executionResult(receipts);
+  const returned = returnedValue(receipts);
+  if (returned?.startsWith('REJECTED_')) {
+    return {
+      phase: returned.endsWith('_NO_VALUE') ? 'Application rejected · no refund required' : 'Application rejected · refund dispatched',
+      children,
+    };
+  }
   return { phase: result === 'SUCCESS' ? 'Finalized · Success' : result ? 'Execution failed' : 'Finalized · Execution unverified', children };
 }
 export async function deliveryStatus(parent: Hex, children: Hex[], account: Hex, market: number) {
@@ -209,6 +234,20 @@ export async function deliveryStatus(parent: Hex, children: Hex[], account: Hex,
     if (status === 'FINALIZED' && result && result !== 'SUCCESS' || status === 'CANCELED' || status === 'UNDETERMINED') return 'Transfer failed · No automatic retry';
   }
   return 'Recipient credit unverified';
+}
+export async function refundStatus(parent: Hex, children: Hex[], account: Hex, value: string) {
+  if (value === '0') return 'No refund required';
+  if (!children.length) return 'Awaiting refund receipt';
+  for (const hash of children) {
+    const tx = await rpc('eth_getTransactionByHash', [hash]) as TxRecord | null;
+    if (!tx || tx.hash?.toLowerCase() !== hash.toLowerCase() || (tx.triggered_by && tx.triggered_by.toLowerCase() !== parent.toLowerCase()) || tx.from_address?.toLowerCase() !== needAddress().toLowerCase() || tx.to_address?.toLowerCase() !== account.toLowerCase()) continue;
+    if (String(exactValue(tx.value)) !== value) continue;
+    const result = executionResult(tx.consensus_data?.leader_receipt);
+    const status = tx.statusName ?? tx.status;
+    if (status === 'FINALIZED' && tx.value_credited === true && (!result || result === 'SUCCESS')) return 'Recipient credit verified';
+    if ((status === 'FINALIZED' && result && result !== 'SUCCESS') || status === 'CANCELED' || status === 'UNDETERMINED') return 'Refund failed · No automatic retry';
+  }
+  return 'Refund credit unverified';
 }
 export const transactionLink = (hash: Hex) => `${EXPLORER}/tx/${hash}`;
 export function formatGen(wei: string | bigint) {

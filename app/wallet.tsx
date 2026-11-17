@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
-import { ADDRESS, CHAIN, deliveryStatus, errorMessage, getReceipt, getWalletState, intentDigest, isAddress, isHash, switchChain, write, type Hex, type Method, type Wallet } from '../lib/chain';
+import { ADDRESS, CHAIN, deliveryStatus, errorMessage, getReceipt, getWalletState, intentDigest, isAddress, isHash, refundStatus, switchChain, write, type Hex, type Method, type Wallet } from '../lib/chain';
 import type { CalldataEncodable } from 'genlayer-js/types';
 
 type Entry = { key: string; account: Hex; hash?: Hex; phase: string; date: number; children?: Hex[]; delivery?: string; finalizedAt?: number; digest: string; value: string; estimatedFee?: string };
@@ -13,7 +13,7 @@ type Connection = {
 };
 const key = `forkpoint:61999:${ADDRESS?.toLowerCase()}:v2`;
 const disconnectedKey = 'forkpoint:disconnected';
-const terminal = new Set(['Finalized · Success', 'Execution failed', 'Unexpected transaction']);
+const terminal = new Set(['Finalized · Success', 'Execution failed', 'Unexpected transaction', 'Application rejected · no refund required', 'Application rejected · refund dispatched']);
 const Context = createContext<Connection | null>(null);
 
 function load(): Entry[] {
@@ -108,11 +108,17 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         entry.key.startsWith('claim:') && entry.phase === 'Finalized · Success'
         && entry.delivery !== 'Recipient credit verified' && !entry.delivery?.includes('failed')
         && Date.now() - Math.max(manualPollSince, entry.finalizedAt ?? entry.date) < 15 * 60_000
+      ) || (
+        entry.key.startsWith('predict:') && entry.phase === 'Application rejected · refund dispatched'
+        && entry.delivery !== 'Recipient credit verified' && !entry.delivery?.includes('failed')
+        && Date.now() - Math.max(manualPollSince, entry.finalizedAt ?? entry.date) < 15 * 60_000
       )));
       await Promise.allSettled(tracked.map(async entry => {
         const receipt = await getReceipt(entry.hash!, entry.account, entry.digest, entry.value);
         const delivery = entry.key.startsWith('claim:') && receipt.phase === 'Finalized · Success'
           ? await deliveryStatus(entry.hash!, receipt.children, entry.account, Number(entry.key.split(':')[1])).catch(() => 'Recipient credit unverified')
+          : entry.key.startsWith('predict:') && receipt.phase === 'Application rejected · refund dispatched'
+            ? await refundStatus(entry.hash!, receipt.children, entry.account, entry.value).catch(() => 'Refund credit unverified')
           : undefined;
         if (stopped || (receipt.phase === entry.phase && delivery === entry.delivery && JSON.stringify(receipt.children) === JSON.stringify(entry.children))) return;
         const latest = load();

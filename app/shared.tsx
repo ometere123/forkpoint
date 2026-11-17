@@ -50,6 +50,8 @@ export function History({ market, creation = false }: { market?: number; creatio
             {entry.hash && <a href={transactionLink(entry.hash)} target="_blank" rel="noreferrer">Transaction ↗</a>}
             {entry.children?.map(hash => <a key={hash} href={transactionLink(hash)} target="_blank" rel="noreferrer">Child receipt {hash.slice(0, 8)} ↗</a>)}
             {method === 'claim' && entry.phase === 'Finalized · Success' && <small>{entry.delivery ?? 'Claim finalized. Transfer delivery is being checked.'}</small>}
+            {method === 'predict' && entry.phase === 'Application rejected · refund dispatched' && <small>{entry.delivery ?? 'Refund dispatched. Recipient credit is being checked.'}</small>}
+            {method === 'predict' && entry.phase === 'Application rejected · no refund required' && <small>No value was attached, so no refund transfer was required.</small>}
             {!entry.hash && !busy && entry.phase !== 'Execution failed' && <details><summary>Recover submission</summary>
               <p>Check the wallet’s Studionet activity. Attach the hash if it submitted a transaction. Clear this record only after confirming no transaction was sent.</p>
               <form onSubmit={event => {
