@@ -1,0 +1,202 @@
+{
+  "kind": "live-studionet-controlled-lifecycles",
+  "observedAt": "2026-11-17T23:24:07.452Z",
+  "network": {
+    "name": "studionet",
+    "chainId": 61999,
+    "rpc": "https://studio.genlayer.com/api",
+    "contract": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+    "sourceSha256": "04b5112f2624699562f680627f1d8c56fddeae8ac4d42de7f69ff493405af8dd",
+    "sourceCommit": "cfa575172da49de64f926658676abc54341ad45c"
+  },
+  "fixtures": {
+    "trigger": {
+      "repository": "ometere123/forkpoint-trigger-fixture",
+      "repositoryId": 1461870361,
+      "pullRequests": {
+        "yes": 5,
+        "noBoundary": 1,
+        "inconclusive": 3,
+        "void": 4
+      }
+    },
+    "target": {
+      "repository": "ometere123/forkpoint-target-fixture",
+      "repositoryId": 1461870477,
+      "immutableReleasesEnabled": true,
+      "substantiveYesRelease": {
+        "tag": "forkpoint-live-yes-substantive-20261117",
+        "releaseId": 449261868,
+        "commit": "4311a4395c6b365fb06b1bc8e7299909457b46d8",
+        "tree": "d2a3b1657d0eb0662460eca81877c49dd48652eb",
+        "blob": "e8579753b5f4329c7d5e8bd7d64fb9820bddea9b",
+        "publishedAt": "2026-11-17T22:12:06Z",
+        "immutable": true
+      }
+    }
+  },
+  "httpPreflight": [
+    {"path": "/repositories/1461870361/pulls/5", "status": 200, "bytes": 18382, "redirect": false},
+    {"path": "/repositories/1461870477/releases/tags/forkpoint-live-yes-substantive-20261117", "status": 200, "bytes": 2100, "releaseId": 449261868, "immutable": true},
+    {"path": "/repositories/1461870477/git/ref/tags/forkpoint-live-yes-substantive-20261117", "status": 200, "bytes": 484, "sha": "4311a4395c6b365fb06b1bc8e7299909457b46d8"},
+    {"path": "/repositories/1461870477/git/commits/4311a4395c6b365fb06b1bc8e7299909457b46d8", "status": 200, "bytes": 1250, "tree": "d2a3b1657d0eb0662460eca81877c49dd48652eb"},
+    {"path": "/repositories/1461870477/git/trees/d2a3b1657d0eb0662460eca81877c49dd48652eb?recursive=1", "status": 200, "entries": 3, "truncated": false},
+    {"path": "/repositories/1461870477/git/blobs/e8579753b5f4329c7d5e8bd7d64fb9820bddea9b", "status": 200, "bytes": 130, "sha": "e8579753b5f4329c7d5e8bd7d64fb9820bddea9b"}
+  ],
+  "markets": {
+    "5": {
+      "scenario": "NO-predicate-boundary",
+      "state": "RESOLVED_NO",
+      "poolWei": "3000",
+      "dispatchedWei": "3000",
+      "yes": 3,
+      "no": 0,
+      "refundAll": true,
+      "create": "0x9513b19ec7310edce8eee4e3be460ee2faae87d52486c8a73ff6735f7c9406dd",
+      "predictions": [
+        "0x5da4d6ea347f87c5c895aac2ac77330ee5d8f3fdb9108f5be0de7197f63860bd",
+        "0xdcc5925aaa5f88442482d40467f91e02ad3876695cb01b6ba058fcbcecb77e63",
+        "0x26e209bc2994d966ebb871dd44b70e9922a29992ec8e99925c0dbca97ad4e81c"
+      ],
+      "trigger": "0xcd8067555bb895f8c3dfbb3a6a2915918cf37ddec0fdf5e6a749d702f93776ef",
+      "outcome": "0x4e6fa7259f4163e8d32388e02d7627cb125e0e2fbb7f8491f27e01c60a8e9933",
+      "outcomeReason": "frozen_lines_missing: constant-only returns were rejected as non-substantive Python source",
+      "claims": [
+        {"parent": "0xe1c350c7e60dc77859a664942638f61908c51a258e0a3e517505cae40915e42a", "child": "0x3cbef74505daaf6fa85e5cc2d71f25db8b8f9da6c2d534f2575f372fee27f6a9"},
+        {"parent": "0x621c39f5038633c36c24f108a1105b5f953002d664a2becbfacef194c38fe5d2", "child": "0x8f3e23096b67c84bd77a3a71e7796430de149f3ee3897a705e4cef1967419c75"},
+        {"parent": "0x5ffa9a555b2e365bb96d74af48cea8fd741505e3f4ced1f86e9c94d124fe61f9", "child": "0xdaeb39ca8caa46e2b8c6b107f48c0f6e49750c005056e223a808605ed9e0de6f"}
+      ]
+    },
+    "6": {
+      "scenario": "INCONCLUSIVE-rate-limit",
+      "state": "INCONCLUSIVE",
+      "poolWei": "3000",
+      "dispatchedWei": "3000",
+      "yes": 1,
+      "no": 2,
+      "refundAll": true,
+      "create": "0x97cf5e95eda89cb72450c09811c3d2f3851171a190135d99c1358e35409b7ee4",
+      "predictions": [
+        "0x4cc95bd21f722b89f86106514822a6a0a96d9e7873cbc413a773781c722226ae",
+        "0x8ec0430fe93806a9112cd826e2747f56aa36178abe34d22cd994eaca8d20105f",
+        "0x3d8c23caebaf1174c055400052b6e60a421264801b46b2c088b544c3d8f358a9"
+      ],
+      "trigger": "0x5bddc75049bce16dc29661258082b87afa478a3c1922d56ed45cf4eb9d9bfd71",
+      "outcomeSlots": [
+        {"transaction": "0x295f8bafd405d8c7a04d2b29122f4f7c212878e0a017e14527a59b45deb5432e", "verdict": "INCONCLUSIVE", "reason": "github_rate_limited_or_forbidden"},
+        {"transaction": "0xf8ce7ac6e26f256b7c2c3e1a873f225e84b371470233e8dc2685eb4c2779fa74", "verdict": "INCONCLUSIVE", "reason": "github_rate_limited_or_forbidden"}
+      ],
+      "claims": [
+        {"parent": "0xc3df9e4b7ccb1a8f7359480a7573feeb562c309d38232f5bc1bac70dcb259fb5", "child": "0x869c4206d86b53fc139793f3c95d7f6eed25f37fdb195aa2b4c4c54afb0aad01"},
+        {"parent": "0x5caef0c9c4bf32645cffd52eb9c4f4906f1c4712b7fd57c48fe08a6fbb122af0", "child": "0x22156c25bcf9cb22211e526d588bee4851510ef221f78d0b707762945dfe4900"},
+        {"parent": "0x25aeb39b9a4bbd94c744eb8e769644e8f5ea34ebf79ddfde73621da87ded0e20", "child": "0x81f94320964cf42bbe5ebe4eec1190b16578685cc761e7e4835d61b3a881568d"}
+      ]
+    },
+    "7": {
+      "scenario": "VOID-unmerged-trigger",
+      "state": "VOID",
+      "poolWei": "3000",
+      "dispatchedWei": "3000",
+      "yes": 2,
+      "no": 1,
+      "refundAll": true,
+      "create": "0xacde4cb7644ef81963537a728795473f016c0155a4b3fdfde91895fe364547d2",
+      "predictions": [
+        "0xf13aff4fcfa5b31b79321da7ea2a7ff7974805164a5ebf20e21704400170fecf",
+        "0x0a6add343aa073123f08a74087eb939180fe187b0a25cfbb5312e5e60c7707db",
+        "0x40791642e9714fe03b8377c2f7640b4cc333850d40ed4108654df3730b0bbc53"
+      ],
+      "trigger": "0x0ab11d96bbada3d7d6ce59b3350d6ae4143f52119af0a69d6d264fc4df5a819a",
+      "claims": [
+        {"parent": "0xd189aa0c06c8550882faf0cc047b0fff4976c43680f00dff65ebeea047a27b5b", "child": "0x01378a0bf1a59012ac3be5d977d8ed82ba5b5e27e9921f85c6004fb942bdc8eb"},
+        {"parent": "0xe9c6842a814599d1e11d2e9f80758e80eeba977fe15504040538847bee8f010b", "child": "0x8cd30dbb0735e1fa11deec7c16564ad3bd92594c11b1e9f85bda219f109dd4d9"},
+        {"parent": "0x0600f3129ca94e5c4f56327177ad5d4b6c555a0bdeecd6eb5f6b739fa9a629ae", "child": "0x3238c6be7ae4f1c1663f6708a6531b489dcfc9ac639c4fc36b90b7912218b1e1"}
+      ]
+    },
+    "9": {
+      "scenario": "INCONCLUSIVE-missing-release",
+      "state": "INCONCLUSIVE",
+      "poolWei": "3000",
+      "dispatchedWei": "3000",
+      "yes": 2,
+      "no": 1,
+      "refundAll": true,
+      "create": "0xaf0ccda874af04765388eed1a40ab4a76033c20b45193f1ef0a269d71fe73ef7",
+      "predictions": [
+        "0x3b8836801204d6162f515e810f770778c9fd066a540cb763c3a0384fea937853",
+        "0x319edbdb7789ea5ea4cbcfa0400e17414688e06b5b2eac9e3a9687b13c4d4544",
+        "0xa32b8b48e5568086a5ab52a984a3647c5fb22d3a8b0e269e3056e0a2f09f0cbd"
+      ],
+      "trigger": "0xe4e2cd51879aa76355e1e8c07ef192f20fbcfcd19e394a3eae0c8b344fb85d4f",
+      "outcomeSlots": [
+        {"transaction": "0xf2c6a0363b7fe4f0b59f914e3c3180e93236bdb59d12fb5c26f9eaf336a37861", "verdict": "INCONCLUSIVE", "reason": "github_not_found"},
+        {"transaction": "0x8a6f44270f31e2c9d9c6c01d02c957ff71ad1c1735449a6d4f891e49d48215e7", "verdict": "INCONCLUSIVE", "reason": "github_not_found"}
+      ],
+      "claims": [
+        {"parent": "0x92482c31b8e1ecedd67da772a092158933278832cf2725edd405c2c89d08b40a", "child": "0xfd6b9955dd91831de9e14fff60e5d070faa8a3b01480e4972fb180b014aca7db"},
+        {"parent": "0xd002ad917651bda32aca86c12159e6451fc34913a9b011cdbcfd670b8726faf4", "child": "0x661b102ac099dcca8ddb412b88cfab27e88325d8eefb023c36c66b5ed33fc459"},
+        {"parent": "0xfe0432b5c7318de6807460ea692a2c21afc0813f3cb87c01aecb1b41fbf6c78a", "child": "0x6de5167b4b4bcd779aff0ee8c6b25d0242767c9cbdc62c793f3068c2ac2efa24"}
+      ]
+    },
+    "11": {
+      "scenario": "YES-substantive-release",
+      "state": "RESOLVED_YES",
+      "poolWei": "3000",
+      "dispatchedWei": "3000",
+      "yes": 3,
+      "no": 0,
+      "refundAll": false,
+      "create": "0x4e4c6f8afc0542d2a2df2592e04c4df8152c45f9ff4e38c36ab6e077cc7f9170",
+      "predictions": [
+        "0xc41abe6d3975be099376ebde9e7e5b4bb95ccf86d9ec588d86955077f8b1f258",
+        "0x250da07b603f9a02a875089b28683fc097c98c32a2e2450e23ede55e7fa42b7a",
+        "0xc19be64b13c7a46788b1376ec311eefa14e8432a88f38823a4cfc8861095823b"
+      ],
+      "trigger": "0x08605db5c162971382c50f409f56d10b20a2d0eedb1aae68222506356b88c2ec",
+      "outcome": "0xc0f8b795c06eb870dec3f0142656c8f8d6f26fada0ebb7a51a847d629c6c5e95",
+      "evidence": {
+        "verdict": "RESOLVED_YES",
+        "checkedAt": 1794957541,
+        "publishedAt": 1794953526,
+        "releaseId": 449261868,
+        "commit": "4311a4395c6b365fb06b1bc8e7299909457b46d8",
+        "tree": "d2a3b1657d0eb0662460eca81877c49dd48652eb",
+        "blob": "e8579753b5f4329c7d5e8bd7d64fb9820bddea9b",
+        "criteriaMatched": [true, true]
+      },
+      "claims": [
+        {"parent": "0x98f57754369ab00f4a90c06a7a8949c867133210aafd13a8614ecc3f76873d4e", "child": "0x4220da4469fc3e534cb610a279a12aff7c3395a95720f4773be117b58419f0ff"},
+        {"parent": "0xaf7b0f2b2057f466cb76aaebe9e3f209a968fc72de45fb60e4411c9baab43c7f", "child": "0xe52d5014c86154254e93997cd8c701e5d7cc707d95da5e52aecfa402ade8732a"},
+        {"parent": "0x6c37f4bec44b02825f886d608beda7708ecf7e4a36e043de380ceea63d88bce8", "child": "0xe30ec03bfbcbdf71fe7f3e40baca3cd2a0c4952753a06507c484f06ee8bceada"}
+      ]
+    }
+  },
+  "commonReceiptChecks": {
+    "scenarioParents": "FINALIZED + SUCCESS + MAJORITY_AGREE",
+    "claimAndRefundParents": "FINALIZED + SUCCESS + MAJORITY_AGREE",
+    "childTransfers": "FINALIZED SEND, exact 1000 wei, value_credited=true, exact parent linkage",
+    "controlledPoolWei": "15000",
+    "controlledDispatchedWei": "15000",
+    "controlledUndispatchedWei": "0",
+    "globalTreasuryReadbackAfterMarket11": {
+      "depositedWei": "17000",
+      "dispatchedWei": "16000",
+      "undispatchedPoolWei": "1000",
+      "runtimeBalanceWei": "1000",
+      "note": "The remaining 1000 wei is an older experimental market outside the five controlled scenarios; every controlled pool is fully dispatched."
+    },
+    "recipientCredit": {
+      "yesMarket11": [
+        {"child": "0x4220da4469fc3e534cb610a279a12aff7c3395a95720f4773be117b58419f0ff", "recipient": "0x0d5540e0aD4B92Aa0ad4e5F1b8cD645ee1E363E7", "valueWei": "1000", "valueCredited": true},
+        {"child": "0xe52d5014c86154254e93997cd8c701e5d7cc707d95da5e52aecfa402ade8732a", "recipient": "0x951e6B75530774fF82321a5ae54e14F778F0C855", "valueWei": "1000", "valueCredited": true},
+        {"child": "0xe30ec03bfbcbdf71fe7f3e40baca3cd2a0c4952753a06507c484f06ee8bceada", "recipient": "0xB845a69860ba4CDf19CfDC5AfbAF2e20b6bE86b0", "valueWei": "1000", "valueCredited": true}
+      ]
+    }
+  },
+  "limitations": [
+    "The stable GenVM v0.2.16 transport follows redirects but exposes no effective final-origin or redirect-control result to the contract; visible redirect responses are rejected, while origin enforcement remains a protocol-level residual risk.",
+    "Git blob SHA verification binds the returned Git object bytes; it is not an independent authentication of GitHub as the source.",
+    "Native claim/refund messages are EMITTED_UNCONFIRMED at the parent. This run independently verified the child SEND and recipient value_credited=true for all controlled claims/refunds; failed child transfers still have no safe automatic recovery path.",
+    "Market 5 is a real RESOLVED_NO predicate-boundary run, not the requested substantive one-missing-marker fixture: the frozen constant-only Python markers were correctly rejected as non-substantive. Markets 6 and 9 cover genuine INCONCLUSIVE terminal refunds."
+  ]
+}

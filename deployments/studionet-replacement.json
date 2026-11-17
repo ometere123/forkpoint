@@ -13,9 +13,10 @@
   "genvmVersion": "v0.2.16",
   "status": "FINALIZED",
   "consensus": "MAJORITY_AGREE",
-  "fundedRelease": false,
+  "fundedRelease": true,
   "fundedBoundaryVerified": true,
   "classification": "PUBLIC_TESTNET_BETA",
-  "evidence": "deployments/studionet-replacement-funded-evidence.json",
-  "notes": "Replacement for the historical candidate. Exact stake, wrong-stake, duplicate, late refund, VOID settlement and claim were exercised with disposable GEN; every tested refund child finalized with value_credited=true and the final treasury returned to zero. Full YES/NO/INCONCLUSIVE controlled-release lifecycles remain unverified, and native transfers are still non-atomic at the protocol boundary."
+  "evidence": "deployments/studionet-controlled-lifecycle-evidence.json",
+  "boundaryEvidence": "deployments/studionet-replacement-funded-evidence.json",
+  "notes": "Replacement for the historical candidate. Three-wallet funded Studionet evidence covers YES market 11, predicate-boundary NO market 5, VOID market 7 and terminal INCONCLUSIVE markets 6 and 9; all controlled 1,000-wei claims/refunds finalized with value_credited=true and controlled pools conserved. Market 5 is explicitly not relabeled as the requested substantive one-missing-marker NO fixture. Native transfers remain non-atomic at the protocol boundary, stable GenVM redirect-origin enforcement remains a residual risk, and the public classification is PUBLIC_TESTNET_BETA."
 }
