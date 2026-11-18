@@ -23,7 +23,14 @@
   "vercel": {
     "productionUrl": "https://forkpoint-sand.vercel.app",
     "ready": true,
-    "contractEnvironment": "NEXT_PUBLIC_FORKPOINT_CONTRACT=0x2702C583b4d331f299B2f5988A9DeB476610f221"
+    "contractEnvironment": "NEXT_PUBLIC_FORKPOINT_CONTRACT=0x2702C583b4d331f299B2f5988A9DeB476610f221",
+    "loggedOutBrowserSmoke": {
+      "routes": ["/", "/markets", "/markets/0", "/markets/new", "/positions"],
+      "desktopAndMobileHttp": 200,
+      "liveRpcObserved": true,
+      "layoutOverflow": false,
+      "transportRisk": "Direct Studio RPC calls can intermittently fail during burst requests when a response omits CORS headers; the frontend surfaces the unavailable/error state."
+    }
   },
   "notes": "Replacement for the historical candidate. Three-wallet funded Studionet evidence covers YES market 11, predicate-boundary NO market 5, VOID market 7 and terminal INCONCLUSIVE markets 6 and 9. Fresh market 12 adds the required mixed-side proof: one YES winner claimed 2,000 wei, one NO loser had NOTHING_CLAIMABLE, the winner child finalized with value_credited=true, the repeat claim was rejected, and the 2,000-wei pool conserved exactly. Market 5 is explicitly not relabeled as the requested substantive one-missing-marker NO fixture. Native transfers remain non-atomic at the protocol boundary and stable GenVM redirect-origin enforcement remains a residual risk; the public classification is FUNDED_STUDIONET_VERIFIED for the funded Studionet demonstration, not unrestricted production security certification."
 }

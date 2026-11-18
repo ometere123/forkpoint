@@ -72,7 +72,7 @@ Fresh market 12 is the mixed-side funded closeout: Praest funded YES and wallet 
 
 The current classification is `FUNDED_STUDIONET_VERIFIED`: funded Studionet lifecycles, recipient credits and the public frontend are verified, with the protocol limitations below still disclosed. Market 5 remains a real predicate-boundary NO settlement; its frozen constant-only markers were correctly rejected as non-substantive, rather than being relabeled as a stronger one-missing-substantive-marker fixture.
 
-The submitted repository is public at [`github.com/ometere123/forkpoint`](https://github.com/ometere123/forkpoint). The production frontend is [`forkpoint-sand.vercel.app`](https://forkpoint-sand.vercel.app), with `NEXT_PUBLIC_FORKPOINT_CONTRACT` set to the replacement address. A clean logged-out desktop/mobile smoke reached all public routes, observed live Studionet reads, showed the experimental banner, and produced no page or console errors.
+The submitted repository is public at [`github.com/ometere123/forkpoint`](https://github.com/ometere123/forkpoint). The production frontend is [`forkpoint-sand.vercel.app`](https://forkpoint-sand.vercel.app), with `NEXT_PUBLIC_FORKPOINT_CONTRACT` set to the replacement address. Logged-out desktop/mobile smoke reached all public routes, showed the experimental banner, and observed live Studionet reads on successful calls with no layout overflow. Direct browser calls to the public Studio RPC can intermittently fail during burst requests when the transport omits CORS headers; the UI exposes that unavailable/error state, and no proxy is treated as an outcome oracle.
 
 
 
