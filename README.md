@@ -49,7 +49,7 @@ npx playwright install chromium
 npx playwright test
 node scripts/mutate_frontend.mjs
 node scripts/verify-studionet.mjs
-node scripts/verify-studionet.mjs CONTRACT_ADDRESS
+node scripts/verify-studionet.mjs 0x2702C583b4d331f299B2f5988A9DeB476610f221
 ```
 
 For GenVM lint, set `GENVM_VERSION=v0.2.16` and `PYTHONUTF8=1` in your shell, then run `uv run genvm-lint check build/forkpoint.py`. The assembler emits UTF-8 with LF line endings so the exact deployed bytes can be reproduced on either OS. The Studionet verifier compares those bytes and the live schema with the local build.
@@ -68,7 +68,11 @@ This is an experimental Studionet/test-GEN deployment, not an unrestricted produ
 
 The controlled funded run used three disposable wallets and the public fixtures [`forkpoint-trigger-fixture`](https://github.com/ometere123/forkpoint-trigger-fixture) and [`forkpoint-target-fixture`](https://github.com/ometere123/forkpoint-target-fixture), with immutable releases enabled. It completed market 11 as `RESOLVED_YES`, market 5 as `RESOLVED_NO` under the frozen static-source predicate, market 7 as `VOID`, and markets 6 and 9 as terminal `INCONCLUSIVE` after bounded two-slot evidence failures. Every controlled market had a 3,000-wei pool and all 15,000 controlled wei were dispatched; every claim/refund child finalized with the exact 1,000-wei amount and `value_credited=true`. The complete hashes and readbacks are in [`deployments/studionet-controlled-lifecycle-evidence.json`](deployments/studionet-controlled-lifecycle-evidence.json).
 
-The current classification is `PUBLIC_TESTNET_BETA`. Market 5 is a real NO settlement, but it is a predicate-boundary run: its frozen constant-only markers were correctly rejected as non-substantive, rather than being the requested one-missing-substantive-marker fixture. This limitation is disclosed instead of being relabeled as a stronger NO proof.
+Fresh market 12 is the mixed-side funded closeout: Praest funded YES and wallet A funded NO, the post-cutoff PR #7 merged in-window, and immutable release `forkpoint-live-mixed-20261118` matched both frozen source markers. The market resolved `RESOLVED_YES`; the YES winner received a finalized 2,000-wei child with `value_credited=true`, the NO loser had `NOTHING_CLAIMABLE`, and a repeated YES claim returned `CLAIM_ALREADY_DISPATCHED`. Exact hashes, consensus results, source facts and readbacks are in [`deployments/studionet-mixed-side-evidence.json`](deployments/studionet-mixed-side-evidence.json).
+
+The current classification is `FUNDED_STUDIONET_VERIFIED`: funded Studionet lifecycles, recipient credits and the public frontend are verified, with the protocol limitations below still disclosed. Market 5 remains a real predicate-boundary NO settlement; its frozen constant-only markers were correctly rejected as non-substantive, rather than being relabeled as a stronger one-missing-substantive-marker fixture.
+
+The submitted repository is public at [`github.com/ometere123/forkpoint`](https://github.com/ometere123/forkpoint). The production frontend is [`forkpoint-sand.vercel.app`](https://forkpoint-sand.vercel.app), deployment `dpl_487WnohuStvWF8dyUk3c9xCZYdXn`, with `NEXT_PUBLIC_FORKPOINT_CONTRACT` set to the replacement address. A clean logged-out desktop/mobile smoke reached all public routes, observed live Studionet reads, showed the experimental banner, and produced no page or console errors.
 
 
 

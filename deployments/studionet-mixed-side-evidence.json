@@ -1,0 +1,181 @@
+{
+  "kind": "live-studionet-mixed-side-funded-market",
+  "network": {
+    "name": "studionet",
+    "chainId": 61999,
+    "rpc": "https://studio.genlayer.com/api",
+    "contract": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+    "sourceSha256": "04b5112f2624699562f680627f1d8c56fddeae8ac4d42de7f69ff493405af8dd"
+  },
+  "market": {
+    "id": 12,
+    "scenario": "Mixed-side funded market: YES winner and NO loser",
+    "spec": {
+      "trigger_repo_id": 1461870361,
+      "pr_number": 7,
+      "target_repo_id": 1461870477,
+      "release_tag": "forkpoint-live-mixed-20261118",
+      "feature": "Mixed-side source-marker adoption after a post-cutoff trigger",
+      "criteria": [
+        {
+          "path": "src/feature.py",
+          "needle": "def feature_marker_one():\n    return \"forkpoint-mixed-one\".upper()"
+        },
+        {
+          "path": "src/feature.py",
+          "needle": "def feature_marker_two():\n    return \"forkpoint-mixed-two\".upper()"
+        }
+      ],
+      "cutoff": 1794960821,
+      "trigger_deadline": 1794961061,
+      "outcome_deadline": 1794961541,
+      "stake": "1000",
+      "limit": 3
+    },
+    "finalReadback": {
+      "state": "RESOLVED_YES",
+      "stored_state": "RESOLVED_YES",
+      "yes_count": 1,
+      "no_count": 1,
+      "pool_wei": "2000",
+      "dispatched_wei": "2000",
+      "undispatched_pool_wei": "0",
+      "refund_all": false
+    }
+  },
+  "fixtures": {
+    "trigger": {
+      "repository": "ometere123/forkpoint-trigger-fixture",
+      "repo_id": 1461870361,
+      "pr": 7,
+      "url": "https://github.com/ometere123/forkpoint-trigger-fixture/pull/7",
+      "pr_id": 5367325641,
+      "merged_at": 1794960834,
+      "merge_commit": "13bad5b5088a97f20b26b955873c27c8ac2ac087"
+    },
+    "target": {
+      "repository": "ometere123/forkpoint-target-fixture",
+      "repo_id": 1461870477,
+      "release_id": 449357089,
+      "release_tag": "forkpoint-live-mixed-20261118",
+      "published_at": 1794960856,
+      "immutable": true,
+      "commit": "e5aa8008f6f776d22f83dbae4840eb7bcf4749d4",
+      "tree": "b93823633fd3aeea19dc0ceb2632ab6988b62936",
+      "blob": "3bceeda755f538a25697082bd4cf8aa301a2d9b5",
+      "release_url": "https://github.com/ometere123/forkpoint-target-fixture/releases/tag/forkpoint-live-mixed-20261118"
+    }
+  },
+  "wallets": {
+    "praest_deployer_yes": "0x0d5540e0aD4B92Aa0ad4e5F1b8cD645ee1E363E7",
+    "walletA_no": "0x951e6B75530774fF82321a5ae54e14F778F0C855"
+  },
+  "transactions": {
+    "create": {
+      "hash": "0x508ad85698d495d3f30be72e889c3af8caa7a8f961e323d19c8dd6350e92f5d2",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "consensus": "MAJORITY_AGREE",
+      "explorer": "https://explorer-studio.genlayer.com/tx/0x508ad85698d495d3f30be72e889c3af8caa7a8f961e323d19c8dd6350e92f5d2"
+    },
+    "predictions": [
+      {
+        "wallet": "praest_deployer_yes",
+        "side": "YES",
+        "hash": "0x4a0c69a895c95938b16c1dce747e8e7a4930f584c10ca6d8da397a0d64430a8b",
+        "status": "FINALIZED",
+        "execution": "SUCCESS",
+        "value_wei": "1000",
+        "value_credited": true
+      },
+      {
+        "wallet": "walletA_no",
+        "side": "NO",
+        "hash": "0x6acc7a27d4117b7a0a021fb006fda87313afe059475ba183fd70a28a0fb3bd7f",
+        "status": "FINALIZED",
+        "execution": "SUCCESS",
+        "value_wei": "1000",
+        "value_credited": true
+      }
+    ],
+    "trigger": {
+      "hash": "0x64b6c40dd4f7b35fd05eaf7e15592540abffff8e7abe13d935b09b2a14171773",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "consensus": "MAJORITY_AGREE",
+      "verdict": "ACTIVE"
+    },
+    "outcome": {
+      "hash": "0x67493bf28a39f5ca164edfc9f8b6743854df22d457c1bf036f4d578692e879a8",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "consensus": "MAJORITY_AGREE",
+      "verdict": "RESOLVED_YES",
+      "checked_at": 1794964675,
+      "criteria_matched": [true, true]
+    },
+    "winningClaim": {
+      "wallet": "praest_deployer_yes",
+      "parent": "0xb05e50a0961eef02d341c9eeb00e7d51c2d01f306cab786e03e05a932603078c",
+      "parent_status": "FINALIZED",
+      "parent_execution": "SUCCESS",
+      "parent_result": "EMITTED_UNCONFIRMED",
+      "child": "0x79b472f903f823373a34b5469012957fbfec14bc6b54c86701e6c721036f1a90",
+      "child_status": "FINALIZED",
+      "child_execution": "SUCCESS",
+      "child_value_wei": "2000",
+      "child_value_credited": true,
+      "child_from": "0x2702C583b4d331f299B2f5988A9DeB476610f221",
+      "child_to": "0x0d5540e0aD4B92Aa0ad4e5F1b8cD645ee1E363E7",
+      "child_triggered_by": "0xb05e50a0961eef02d341c9eeb00e7d51c2d01f306cab786e03e05a932603078c"
+    },
+    "losingClaim": {
+      "wallet": "walletA_no",
+      "hash": "0x8a9619aa99a7928437d76091267171b364c55ed1642c43bddbcbe9752c96cba9",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "consensus": "MAJORITY_AGREE",
+      "result": "NOTHING_CLAIMABLE",
+      "triggered_transactions": []
+    },
+    "duplicateClaim": {
+      "wallet": "praest_deployer_yes",
+      "hash": "0xe4871dcb07da331ac2a2016ebdf0b2752180c3d87dd60d1663656526d702d1dd",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "consensus": "MAJORITY_AGREE",
+      "result": "CLAIM_ALREADY_DISPATCHED",
+      "triggered_transactions": []
+    }
+  },
+  "readbacks": {
+    "yes_position": {
+      "yes": true,
+      "stake": "1000",
+      "claimable": "0",
+      "dispatched": true,
+      "dispatched_amount": "2000",
+      "payout_status": "EMITTED_UNCONFIRMED"
+    },
+    "no_position": {
+      "yes": false,
+      "stake": "1000",
+      "claimable": "0",
+      "dispatched": false,
+      "dispatched_amount": "0"
+    },
+    "treasury_after": {
+      "deposited_wei": "19000",
+      "dispatched_wei": "18000",
+      "undispatched_pool_wei": "1000",
+      "runtime_balance_wei": "1000"
+    },
+    "controlled_market_conservation": "pool_wei 2000 = dispatched_wei 2000 + undispatched_pool_wei 0; the remaining global 1000 wei belongs to an older market outside this scenario",
+    "recipient_credit": "The child SEND is FINALIZED + SUCCESS, value=2000, value_credited=true, and to_address equals the winning wallet."
+  },
+  "limitations": [
+    "Parent native payout state remains EMITTED_UNCONFIRMED; child receipt and value_credited are separate evidence.",
+    "Stable GenVM v0.2.16 follows redirects without exposing final-origin enforcement to the contract; visible redirect responses are rejected, but redirect-origin is a residual protocol risk.",
+    "This verifies the frozen immutable-release source-marker predicate, not runtime compatibility or general semantic correctness."
+  ]
+}

@@ -3,6 +3,7 @@ on: [push, pull_request]
 env:
   GENVM_VERSION: v0.2.16
   PYTHONUTF8: '1'
+  FORKPOINT_STUDIONET_CONTRACT: 0x2702C583b4d331f299B2f5988A9DeB476610f221
 permissions:
   contents: read
 jobs:
@@ -22,6 +23,7 @@ jobs:
       - run: uv sync --locked
       - run: uv run python scripts/build_contract.py
       - run: uv run genvm-lint check build/forkpoint.py
+      - run: node scripts/verify-studionet.mjs ${{ env.FORKPOINT_STUDIONET_CONTRACT }}
       - run: uv run python -m pytest --cov=build --cov-branch --cov-report=term-missing --cov-report=xml
       - run: uv run python scripts/mutate_contract.py
       - run: npm ci

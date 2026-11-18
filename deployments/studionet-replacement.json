@@ -15,8 +15,16 @@
   "consensus": "MAJORITY_AGREE",
   "fundedRelease": true,
   "fundedBoundaryVerified": true,
-  "classification": "PUBLIC_TESTNET_BETA",
+  "classification": "FUNDED_STUDIONET_VERIFIED",
   "evidence": "deployments/studionet-controlled-lifecycle-evidence.json",
   "boundaryEvidence": "deployments/studionet-replacement-funded-evidence.json",
-  "notes": "Replacement for the historical candidate. Three-wallet funded Studionet evidence covers YES market 11, predicate-boundary NO market 5, VOID market 7 and terminal INCONCLUSIVE markets 6 and 9; all controlled 1,000-wei claims/refunds finalized with value_credited=true and controlled pools conserved. Market 5 is explicitly not relabeled as the requested substantive one-missing-marker NO fixture. Native transfers remain non-atomic at the protocol boundary, stable GenVM redirect-origin enforcement remains a residual risk, and the public classification is PUBLIC_TESTNET_BETA."
+  "mixedSideEvidence": "deployments/studionet-mixed-side-evidence.json",
+  "publicRepository": true,
+  "vercel": {
+    "productionUrl": "https://forkpoint-sand.vercel.app",
+    "deploymentId": "dpl_487WnohuStvWF8dyUk3c9xCZYdXn",
+    "ready": true,
+    "contractEnvironment": "NEXT_PUBLIC_FORKPOINT_CONTRACT=0x2702C583b4d331f299B2f5988A9DeB476610f221"
+  },
+  "notes": "Replacement for the historical candidate. Three-wallet funded Studionet evidence covers YES market 11, predicate-boundary NO market 5, VOID market 7 and terminal INCONCLUSIVE markets 6 and 9. Fresh market 12 adds the required mixed-side proof: one YES winner claimed 2,000 wei, one NO loser had NOTHING_CLAIMABLE, the winner child finalized with value_credited=true, the repeat claim was rejected, and the 2,000-wei pool conserved exactly. Market 5 is explicitly not relabeled as the requested substantive one-missing-marker NO fixture. Native transfers remain non-atomic at the protocol boundary and stable GenVM redirect-origin enforcement remains a residual risk; the public classification is FUNDED_STUDIONET_VERIFIED for the funded Studionet demonstration, not unrestricted production security certification."
 }
